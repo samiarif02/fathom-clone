@@ -2,37 +2,46 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 /** Owns the <video>/<audio> element and exposes a smoothly updating playhead in ms. */
 export function usePlayer() {
-  const ref = useRef<HTMLVideoElement>(null);
+  const ref = useRef<HTMLVideoElement | null>(null);
+  // The element mounts after data loads; a callback ref puts it in state so the effect attaches then.
+  const [el, setEl] = useState<HTMLVideoElement | null>(null);
+  const setRef = useCallback((node: HTMLMediaElement | null) => {
+    ref.current = node as HTMLVideoElement | null;
+    setEl(node as HTMLVideoElement | null);
+  }, []);
   const [ms, setMs] = useState(0);
   const [playing, setPlaying] = useState(false);
   const pending = useRef<number | null>(null);
 
   useEffect(() => {
-    const el = ref.current;
     if (!el) return;
     let raf = 0;
+    const sync = () => setMs(Math.round(el.currentTime * 1000));
     const tick = () => {
-      setMs(Math.round(el.currentTime * 1000));
+      sync();
       if (!el.paused) raf = requestAnimationFrame(tick);
     };
-    const onPlay = () => { setPlaying(true); raf = requestAnimationFrame(tick); };
+    const onPlay = () => { setPlaying(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); };
     const onPause = () => { setPlaying(false); cancelAnimationFrame(raf); tick(); };
-    const onSeeked = () => tick();
     const onLoaded = () => {
       if (pending.current != null) { el.currentTime = pending.current / 1000; pending.current = null; }
     };
     el.addEventListener("play", onPlay);
     el.addEventListener("pause", onPause);
-    el.addEventListener("seeked", onSeeked);
+    el.addEventListener("seeked", sync);
+    el.addEventListener("timeupdate", sync); // fallback if animation frames are throttled
     el.addEventListener("loadedmetadata", onLoaded);
+    // If the element was already playing when we attached, keep the playhead loop going.
+    if (!el.paused) raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
       el.removeEventListener("play", onPlay);
       el.removeEventListener("pause", onPause);
-      el.removeEventListener("seeked", onSeeked);
+      el.removeEventListener("seeked", sync);
+      el.removeEventListener("timeupdate", sync);
       el.removeEventListener("loadedmetadata", onLoaded);
     };
-  });
+  }, [el]);
 
   const seek = useCallback((toMs: number, play = true) => {
     const el = ref.current;
@@ -50,7 +59,7 @@ export function usePlayer() {
     else el.pause();
   }, []);
 
-  return { ref, ms, playing, seek, toggle };
+  return { ref, setRef, ms, playing, seek, toggle };
 }
 
 export type Player = ReturnType<typeof usePlayer>;

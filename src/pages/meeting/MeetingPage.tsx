@@ -132,11 +132,11 @@ export default function MeetingPage() {
           <div className="overflow-hidden rounded-xl bg-zinc-900 shadow-sm">
             {meeting.media_kind === "audio" ? (
               <div className="flex aspect-[3/1] items-center justify-center text-zinc-400">
-                <audio ref={player.ref as unknown as React.RefObject<HTMLAudioElement>} src={mediaUrl ?? undefined} preload="metadata" />
+                <audio ref={player.setRef} src={mediaUrl ?? undefined} preload="metadata" />
                 {speaker ? <span className="text-lg font-medium text-white">{speaker.name}</span> : "Audio recording"}
               </div>
             ) : (
-              <video ref={player.ref} src={mediaUrl ?? undefined} preload="metadata" controls playsInline className="aspect-video w-full bg-black" />
+              <video ref={player.setRef} src={mediaUrl ?? undefined} preload="metadata" controls playsInline className="aspect-video w-full bg-black" />
             )}
           </div>
 

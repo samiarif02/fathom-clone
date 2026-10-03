@@ -67,7 +67,7 @@ export default function Clip() {
       <p className="mt-1 text-sm text-zinc-500">From “{meeting.title}” · {dateTime(meeting.started_at)}</p>
 
       <div className="mt-5 overflow-hidden rounded-xl bg-zinc-900 shadow-sm">
-        <video ref={player.ref} src={`${data.media_url}#t=${clip.start_ms / 1000},${clip.end_ms / 1000}`} preload="auto" playsInline
+        <video ref={player.setRef} src={`${data.media_url}#t=${clip.start_ms / 1000},${clip.end_ms / 1000}`} preload="auto" playsInline
           onClick={player.toggle} className="aspect-video w-full cursor-pointer bg-black" />
         <div className="flex items-center gap-3 px-4 py-3 text-white">
           <button
