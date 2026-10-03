@@ -9,8 +9,8 @@
     "run_worker_first": ["/api/*"]
   },
   "observability": { "enabled": true },
-  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "fathom-clone-media" }],
-  "ai": { "binding": "AI" },
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "fathom-clone-media", "remote": true }],
+  "ai": { "binding": "AI", "remote": true },
   "vars": {
     "SUPABASE_URL": "https://wougnqlkzaqlkieyaqjt.supabase.co",
     "SUPABASE_ANON_KEY": "sb_publishable_ubE0_sK6yrEwuSXD4KIgMA_Yv3QRqPB"

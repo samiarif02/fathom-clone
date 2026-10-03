@@ -4,6 +4,8 @@ import { useAuth } from "./lib/auth";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Meetings from "./pages/Meetings";
+import MeetingPage from "./pages/meeting/MeetingPage";
+import Clip from "./pages/Clip";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
@@ -17,8 +19,10 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/c/:token" element={<Clip />} />
       <Route element={<RequireAuth><Layout /></RequireAuth>}>
         <Route index element={<Meetings />} />
+        <Route path="/meetings/:id" element={<MeetingPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
