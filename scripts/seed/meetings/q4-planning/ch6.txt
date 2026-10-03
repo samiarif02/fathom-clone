@@ -1,0 +1,63 @@
+Karen: Okay, thanks Jordan. This one is the one I've been losing sleep over, so bear with me. Acme Mechanical escalated on Friday, and when I say escalated, I mean their COO emailed me and copied our CEO.
+Jordan: Ouch. Remind everyone who Acme are, just so we're all starting from the same place.
+Karen: Sure. Acme Mechanical is our largest customer. They're at $310,000 in ARR, they've got 400 technicians on the platform, and they run HVAC and plumbing across four states. They've been with us for three years.
+Daniel: So, roughly two percent of our ARR, give or take, in one very unhappy envelope.
+Tessa: It's closer to 2.2 percent, actually. Sorry. Habit.
+Daniel: Of course it is.
+Karen: There are two problems. First, the dispatch board is slow at the seven a.m. peak. That's when every dispatcher in their four offices is assigning the day's jobs at the same time, and the board just crawls. Their COO told me, and I'm quoting, that his dispatchers are watching a spinner while technicians sit in driveways.
+Moira: That's a terrible image. How slow are we talking? What does a dispatcher actually see?
+Karen: They timed it themselves. Anywhere from four to six seconds before the board is usable, and sometimes it times out and they refresh and start over.
+Rishi: That matches what we see on our side. I pulled the numbers last night. Board load p95 at the seven a.m. peak is 4.8 seconds. Median is a lot better, around 1.9 seconds, but the tail is awful, and the tail is exactly what a big dispatch office feels.
+Jordan: And do we know why?
+Rishi: Yes, and it's slightly embarrassing. There's an N plus one query on job assignments. For every job on the board we fire a separate query to fetch the assigned technicians, so a customer with a few thousand jobs on the board generates a few thousand queries per load. On top of that there's no caching at all on the board payload. Every dispatcher refresh hits Postgres cold.
+Daniel: Which, in light of the last ten minutes, is also adding to the RDS bill.
+Rishi: It is. So there's a small win for infra cost in here too.
+Moira: Is the fix visible to users, or is it all backend?
+Rishi: Mostly backend. We batch the assignment query, add a cache layer in front of the board payload, and invalidate on job changes. Moira, you might want to look at the loading state, because even at one second a blank board feels slow, but that's a nice to have.
+Moira: I'll have a look at a skeleton state. It's cheap and it makes a surprising difference.
+Karen: Can I come back to the second problem, because it's the bigger one commercially? Their renewal is January 31st, and their IT lead has told us in writing that renewal requires SSO. Specifically SAML. They're moving everyone onto Okta, and they won't sign without it.
+Jordan: So the slow board is the fire, and SSO is the contract.
+Karen: Exactly. If we fix the board but don't have SAML, we lose them in January. If we have SAML but the board is still slow, they won't get that far.
+Jordan: Okay. Rishi, what can we honestly commit to on the performance side?
+Rishi: Give me a date and a number, because I don't want to say it twice. I think we can have the performance fix in production by October 23rd. The target is p95 under 1.5 seconds at the seven a.m. peak, measured the same way we measured it today.
+Tessa: Can I add something? Measured on what, though? If we measure on a quiet Tuesday we'll hit one second easily and it won't mean anything.
+Rishi: Fair. Peak window, production traffic, Acme's account specifically. I'll set up a dashboard so Karen can show them the line going down.
+Tessa: I can help with the panel if you want it in the same place as the revenue stuff.
+Rishi: Please.
+Karen: October 23rd works for me. That gives me room to take it to their COO before they start counting days.
+Jordan: And SSO? Daniel, I know this is where you're about to frown.
+Daniel: I'm frowning on principle. SAML SSO is not a small thing. There's the identity provider integration, the metadata handling, the admin screens, the testing against Okta in particular, and everyone assumes it's three weeks and it is never three weeks. But the renewal date is real, and I'd rather commit now than negotiate later. I think we can land SAML SSO by December 15th, which leaves six weeks of buffer before the renewal.
+Karen: Six weeks of buffer would make their IT lead very happy.
+Daniel: It will also be after the change freeze starts on December 1st, so I'd like it code complete and in staging before then. Anything that touches login in the middle of winter peak, I'd want to be very careful about.
+Rishi: Agreed. Auth is exactly the thing I don't want to be rolling out the week of the first cold snap.
+Jordan: So the commitment is performance fix by October 23rd, p95 under 1.5 seconds, and SAML SSO by December 15th. Everyone happy that I say that out loud on the record?
+Daniel: Happy is a strong word. Prepared to be held to it.
+Karen: I'll hold you to it, with love.
+Jordan: Now, the honest part. Daniel, what does this cost us?
+Daniel: Capacity, and nothing else. We don't have a spare team. Rishi's platform group is doing the infra work and the board fix. SSO needs at least one full engineer for six weeks plus review time. And the only project big enough to give up the people is the customer portal.
+Jordan: The portal is the one with the self-service invoices and appointment tracking.
+Daniel: Yes. The design is done, the backend is scoped, and we're about to start. I'd suggest we push it to Q1. Not cancel it, just move it.
+Moira: Which I understand, but I want to flag that Karen's team has been asking for that portal for a year. We're not going to get that goodwill back for free.
+Karen: I'll take that hit. It's a real cost, but I'd rather tell customers the portal is a quarter later than tell Acme we can't sign them. Three hundred and ten thousand dollars is a lot of appointment reminders.
+Jordan: Okay. I agree. The customer portal moves to Q1. Moira, can you keep the designs warm so the team doesn't start from scratch in January?
+Moira: Yes. I'll park the files and write up the open decisions so nobody has to remember them.
+Jordan: Thank you. And Karen, I want that tone from you when I talk to the customers who were hoping for the portal.
+Karen: You'll get it.
+Jordan: Let's go through the owners. Karen, you're going to schedule an executive call with Acme.
+Karen: Yes. I'll schedule an exec call with Acme next week. I'd like Jordan and Rishi on it, and ideally you can both explain the fix in plain English to their COO and their IT lead.
+Jordan: I'll be there. Rishi?
+Rishi: I'll be there, and I own the performance fix. I'll put the plan in writing before the call so Karen has something to send.
+Jordan: Great. And Daniel, I need a name for the SSO owner.
+Daniel: I'll name an SSO owner by Friday. I have two candidates in mind and I need to check what they're carrying before I say it publicly.
+Jordan: Friday meaning this Friday, October 2nd?
+Daniel: This Friday, yes. Not Friday week, not Friday when the stars align.
+Jordan: Thank you. Anything else on Acme before we move on?
+Karen: One thing. Please don't promise them SCIM yet. They'll ask. Their IT lead strikes me as a person who asks.
+Jordan: Noted. SAML first, and we'll talk about provisioning after that.
+Rishi: SCIM is a separate piece of work. I'd say that's a Q1 conversation at the earliest.
+Karen: Good. Then I'm done. Thank you all, that's a weight off.
+Jordan: Before you disappear, Karen, is there anything you need from the room this week that we haven't named?
+Karen: Just honesty. If the October 23rd date starts to wobble, I'd rather hear it on October 16th than on the 22nd.
+Rishi: That's fair. I'll flag it the moment I see risk, and I'll give you a mid-point check in the Friday email.
+Daniel: And if it wobbles because someone borrowed his engineers for something shiny, you may blame me.
+Jordan: Noted, and we'll hold you to that too. Okay, last topic of the day.

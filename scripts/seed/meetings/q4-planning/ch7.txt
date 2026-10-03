@@ -1,0 +1,67 @@
+Jordan: Okay, hiring. Daniel, you've got the reqs, so give us the quick version.
+Daniel: Four open reqs at the moment. Two mobile engineers, one SRE, and one product designer. The mobile engineers are the ones I'd fill first, given offline mode, and the SRE is the one I'd fight for if we're serious about the infra plan Rishi just walked through.
+Priya: Mobile is a yes from me, obviously. Wei and Sofia are carrying a lot, and the offline beta is going to need people who can chase bugs while the others finish the editing work.
+Rishi: And I'd say the SRE is not optional. I'm writing a migration RFC for a database that nobody wants to touch, and having a second pair of hands who actually does on-call for a living would help.
+Daniel: Noted, and I agree. Those three are moving. The one I'm less sure about is the designer.
+Moira: Can I jump in on that one, because I have a view.
+Daniel: I assumed you might.
+Moira: I want the designer now. We just agreed to ship offline conflict screens, a new pricing page, Enterprise admin screens for SSO, and a loading state for the dispatch board, all in about two months. I have a team of three. It does not add up.
+Daniel: I'm not arguing about the workload. I'm saying that pricing lands in a few weeks, and depending on how it lands, the shape of the role might change. If we go with three tiers, you might want somebody with more systems experience, not a generalist.
+Moira: Or I might want a senior person who can own the offline experience end to end, which is what I want, honestly.
+Jordan: Is there a candidate in the pipeline, or is this theoretical?
+Moira: There's a real person. Nadia Hussain. She redesigned a logistics driver app, offline first, and she cut task time by twenty-two percent. She's interviewing with us this week.
+Jordan: I know, I'm joining her interview. I read her portfolio on the weekend and I was impressed.
+Daniel: Right. Then I'm going to concede the point. If Moira has a strong candidate who's already in the pipe, it would be silly to close the req and then reopen it in a month.
+Moira: Thank you.
+Daniel: I'd just like to say, for the record, that I was being cautious and not obstructive.
+Moira: Noted. Minuted. Framed.
+Jordan: So we agree the designer req stays open, and we'll see how Nadia does. If she's a yes, we move quickly.
+Daniel: And we'll talk about the headcount mix again after the next check-in if pricing changes the picture.
+Priya: Can I ask about timing on the mobile reqs? If we open interviews this month, a start date before the offline editing work wraps up is unlikely, so I'd rather be honest about what they'll actually help with.
+Daniel: Realistically they help with the second half of November onward. So they're for the long game, and for the Q1 work, not the beta.
+Priya: Fine. As long as nobody builds the beta plan around people who haven't been hired yet.
+Jordan: Nobody will. Good flag.
+Rishi: Same for the SRE. A good one takes two months to find and another two to be useful. So the infra savings plan has to work with the people we have.
+Daniel: Understood, and that's why the freeze matters as much as it does.
+Jordan: Good. That's hiring. Let me do the recap, because I want to make sure we're all leaving with the same version. I'll go in order, and I'll keep it brief. Stop me if I get something wrong.
+Priya: Go ahead.
+Jordan: First, mobile offline mode. We're shipping read-only offline to a beta of twenty customers on October 27th, with full offline editing targeted for November 12th, all behind a feature flag. Priya sends Karen the beta customer criteria by Friday, October 2nd. Moira delivers the conflict resolution designs by October 9th. And Daniel makes sure QA has a device lab plan for offline before the beta starts.
+Daniel: Correct. I'll have that in writing before the twenty-seventh.
+Jordan: Second, pricing. Existing customers are grandfathered on current pricing for twelve months, and the new three tier pricing applies to new signups from November 1st. The SSO question is parked, whether it lives in Pro or Enterprise only, and I'll decide that after talking to three customers, by October 14th. Aman and Moira finalise the pricing page copy by October 16th, and Tessa builds the revenue impact dashboard by October 9th.
+Aman: Yes, and I already have a draft of the copy, so I'm ahead of the game.
+Tessa: Dashboard by October 9th. Confirmed.
+Moira: And the pricing page copy gets a Starter section that does not feel like a trap. Please write that down somewhere.
+Jordan: Noted. Third, infrastructure. We're freezing infra changes from December 1st to January 5th. Rishi writes the migration RFC by October 7th, and Daniel approves the reserved instance purchase this week. The target is forty-five thousand dollars a month in savings by the end of Q4, and the analytics replica stays.
+Rishi: The replica stays, yes. Tessa, you're safe.
+Tessa: Thank you, I'm relieved.
+Jordan: Fourth, Acme. Performance fix by October 23rd, with the target p95 under 1.5 seconds. SAML SSO by December 15th. The customer portal moves to Q1. Karen schedules the exec call with Acme next week, Rishi owns the performance fix, and Daniel names the SSO owner by Friday.
+Daniel: By Friday, yes. I'll send a note to the group.
+Karen: And I'll send the invite as soon as I have dates from Greg's office.
+Rishi: Please include me in the invite. I'd rather explain the fix myself than have it relayed.
+Jordan: Done. And hiring, the designer req stays open, Moira's interviewing Nadia this week, and we hold the other three as Daniel described. Did I miss anything?
+Priya: I think that's all of it. I'd have said the same.
+Aman: That was very clean. I'd like a copy of that for my deck.
+Jordan: You'll get the notes, Aman. Not the deck, the notes.
+Aman: Fine, I'll make it a slide anyway.
+Daniel: Of course he will.
+Jordan: Our next check-in is October 13th, same time. Please come with status on your actions, and flag blockers early. I would much rather hear about a problem on the twelfth than the twenty-third.
+Tessa: Is the thirteenth a Tuesday?
+Jordan: It is. Same slot, ten o'clock.
+Tessa: Good, I'll put it in my calendar before I forget.
+Moira: Thank you, Jordan. That was a lot, and it felt like it went by quickly.
+Jordan: We have exactly zero minutes left, so well done everyone. Thank you for keeping it tight.
+Karen: Thanks all. And sorry again for being late.
+Daniel: You made up for it, Karen. You were the loudest person in the room for twenty minutes.
+Karen: That's the job.
+Priya: Sorry, my dog has decided that this is the best time to bark at the postman.
+Rishi: I can hear him. He sounds very sure of himself.
+Priya: He is very sure of himself, and wrong, as usual.
+Moira: What's his name?
+Priya: Biscuit.
+Moira: Of course it is.
+Jordan: Okay. Everyone have a good rest of the day. See you all Thursday for the design review.
+Daniel: See you Thursday. Bring biscuits.
+Priya: Please do not encourage him.
+Aman: Bye everyone.
+Tessa: Bye.
+Karen: Bye, all.

@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fathom-clone",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true },
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "fathom-clone-media" }],
+  "ai": { "binding": "AI" },
+  "vars": {
+    "SUPABASE_URL": "",
+    "SUPABASE_ANON_KEY": ""
+  }
+  // Secrets (wrangler secret put / .dev.vars): SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY,
+  // MEDIA_SIGNING_KEY, DEMO_PASSWORD, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+}

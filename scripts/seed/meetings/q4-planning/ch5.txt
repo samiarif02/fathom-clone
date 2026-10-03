@@ -1,0 +1,86 @@
+Jordan: Okay, we're at thirty-five minutes, so let's move. Infra cost. Rishi, this one's yours.
+Rishi: Thanks. I'll keep it to the numbers, there are a lot of them. Our AWS bill is a hundred and eighty-six thousand dollars a month. That is up thirty-one percent year on year, while revenue is up much less than that.
+Daniel: Ouch. Said out loud, it's worse than on the spreadsheet.
+Rishi: It is. So, where's it going. Two big items. First, the Postgres database on RDS. It's oversized. We scaled it up during an incident in March and never scaled it back down. It's running at about twenty-two percent average CPU, and we're paying for headroom we don't use.
+Rishi: Second is logging. Datadog alone is forty-one thousand dollars a month. And most of that is debug-level logs from services that have been chatty since the beginning, nobody ever turned them down.
+Moira: Forty-one thousand a month on logs. Is anyone reading them?
+Rishi: Honestly, no. Very few of them. We read the errors, and we read traces when something's on fire. Debug logs are mostly kept in case.
+Moira: In case of what?
+Rishi: Exactly that question. That's the plan, basically. Four things. One, sample the debug logs. We keep every error and warning, and we keep, say, ten percent of the debug lines. Two, move cold logs, anything older than a week or two, into S3, which is a fraction of the cost and still searchable if we need it.
+Rishi: Three, right-size the database. We drop the instance class and we put it on a schedule so we can scale up if we have to. And four, buy reserved instances for the compute that we know is always on. That's about sixty percent of our compute, and we're paying the on-demand rate for it.
+Daniel: How much does that add up to?
+Rishi: Target saving is forty-five thousand dollars a month by the end of Q4. That would take us from one eighty-six to about one forty-one.
+Tessa: Is that forty-five measured, or is that the hopeful number?
+Rishi: It's a bottom-up estimate. Datadog is the biggest chunk, around eighteen thousand. Database around ten. Reserved instances around fourteen. And a little bit from storage and clean-up. I'd call the Datadog and reserved numbers firm, and the database a bit softer.
+Tessa: Good, that's what I wanted to hear. I'll put it in the finance deck with a range.
+Rishi: Put it as forty-five target, thirty-five floor.
+Tessa: Thirty-five floor. Done.
+Moira: Sorry, going back. When you say cold logs go to S3, what does an engineer actually see when they need one? Is it a search box, or a ticket to someone?
+Rishi: It's a query tool. Slower than Datadog, a few seconds to a minute depending on the range, but self-serve. Nobody needs to file anything.
+Moira: Okay. Then I'd say document it somewhere obvious, because the first time somebody can't find a log, they'll assume we deleted it.
+Rishi: Fair. I'll put a short how-to in the RFC.
+Tessa: What about the Datadog contract itself? Is there a renewal coming up?
+Rishi: Annual, renewing in February. So the sampling changes will show up in our usage well before that, which gives us leverage to negotiate the commit down. I haven't priced that in, by the way. It would be on top of the forty-five.
+Daniel: Do not count it until it's signed.
+Rishi: I'm not counting it. I'm just mentioning it.
+Jordan: Is there anything in this that depends on the product teams? I don't want a surprise where you need someone to change their service.
+Rishi: Slightly, yes. Some of the debug noise is coming from the job sync service, which is the thing Priya's team is changing for offline mode. I'd rather not touch its logging while they're mid-beta.
+Priya: Please don't. I'm already debugging sync conflicts, and I'd like every log line I can get until the end of October.
+Rishi: Understood. I'll leave job sync alone until after the beta starts, and sample it last.
+Priya: Thank you. That's very kind of you.
+Rishi: It's practical, not kind.
+Daniel: He's blunt, but he gets there.
+Daniel: Let me ask the question that I always ask. When does this happen, and what could go wrong? Because I'm slightly nervous about someone touching the production database in the middle of a season.
+Rishi: Right. The database change is the riskiest. It's a failover to a smaller instance, normally about a minute of downtime if it's done properly, and we'd do it in a maintenance window at night. The logging changes are low risk. Reserved instances are just a billing commitment, no technical change at all.
+Daniel: Mm. And that's the thing, we have to think about the calendar. Winter is peak season for HVAC. December is when heating calls spike. If a dispatch board goes down on the coldest day of the year, I will not be popular.
+Karen: You would not. Last December we had customers who did three times the normal job volume on one Monday.
+Daniel: So I'd like to say it plainly. I don't want any risky infrastructure changes during peak season. No migrations, no failovers, no clever experiments.
+Jordan: What dates are you thinking, Daniel?
+Daniel: December first through to January fifth. That gets us through the holidays and the first week back, when everybody's catching up.
+Rishi: That's fine, actually. It means we need the database work done by the end of November. That's tight, but it's possible.
+Priya: Does the freeze include mobile releases? Because I don't want to be surprised.
+Daniel: Good question. App store releases of the mobile app are fine, as long as they don't depend on a backend change. I mean the infrastructure, not the product.
+Priya: Okay. I'll plan around that.
+Jordan: Let me just say it so it's on the record. Infra change freeze from December first to January fifth. Anyone disagree?
+Rishi: No. It helps me, honestly. It gives me a deadline.
+Moira: Does the freeze include a design system update? Asking for a friend.
+Daniel: Is it infrastructure, Moira?
+Moira: No.
+Daniel: Then no.
+Jordan: Good. That's decided.
+Tessa: Can I ask about the analytics replica? The read replica of the database that I run all of my models from. If you're resizing the primary, what happens to the replica?
+Rishi: Good question, and it's affected, yes. The replica follows the primary's version and its storage, so I'll need to resize or rebuild it. But I'm going to keep it. I know the dashboards depend on it, and the revenue dashboard that you're building for pricing.
+Tessa: The one I just promised for October ninth.
+Rishi: That one. So I'll sequence the work so the replica is never down while you're building it. I'd rather do the replica after the ninth.
+Tessa: Thank you. And if you can tell me roughly when it'll be unavailable, I'll schedule around it.
+Rishi: I'll put the dates in the RFC.
+Jordan: Which brings us to the RFC. Rishi, can you write up the migration plan?
+Rishi: Yes. I'll write the migration RFC by October seventh. That's next Wednesday.
+Daniel: Sorry, is October seventh next Wednesday? Or is that this one?
+Rishi: Wednesday is October seventh. That's this coming Wednesday.
+Daniel: Right, that's what I was checking. We're on the twenty-ninth, so it's the next one.
+Jordan: And Daniel, there's the reserved instances.
+Daniel: Yes. The reserved instance purchase needs an approval. It's a one-year commitment, which is a real number, so I'd like to look at it properly. I'll approve it this week. By Friday.
+Rishi: I'll send you the breakdown today so you've got something to look at.
+Daniel: Please. With the break-even date, if you've got it.
+Rishi: About seven months. So the savings pay for the commitment well within the year.
+Daniel: Good. I can live with seven months.
+Karen: Rishi, can I ask something from the customer side? Does any of this change what customers see? I don't want any surprises.
+Rishi: Not if it goes well. If it goes badly, you'd see a minute of slowness. That's why it's in a maintenance window, with a notice, and not during dispatch hours.
+Karen: Okay. Can you tell me the windows in advance, so I can warn the big accounts?
+Rishi: I'll put them in the RFC, and I'll make sure you get a copy.
+Karen: Thank you.
+Priya: One more thing. Is any of the logging change going to affect the crash logs from the mobile app? I rely on those.
+Rishi: No, crash reports go through a different pipeline. Only the backend debug logs get sampled. Errors are kept in full.
+Priya: Good.
+Daniel: And if we sample the debug logs and then need exactly the line we threw away?
+Rishi: Then we turn the sampling up for that service for a day. It's a config change, not a deployment. We'd just pay a bit more that day.
+Daniel: That's reassuring. I will now stop being nervous.
+Jordan: You've never stopped being nervous, Daniel.
+Daniel: No, but it's nice to hear that somebody else has a plan.
+Jordan: Let me recap this section so it's clear. AWS is a hundred and eighty-six thousand a month, up thirty-one percent. The plan is to sample debug logs, move cold logs to S3, right-size the database and buy reserved instances. Target saving is forty-five thousand a month by the end of Q4, with a floor of thirty-five.
+Jordan: Decision: infra change freeze from December first to January fifth. Rishi writes the migration RFC by October seventh. Daniel approves the reserved instance purchase this week. And the analytics replica stays.
+Rishi: That's all correct.
+Jordan: Wonderful. Thank you, Rishi. That's a lot of money to find in a quarter.
+Rishi: It's mostly money we shouldn't have been spending.
+Jordan: Right, which is the best kind. Okay, we're at about forty-five minutes. Karen, the Acme escalation. I know you've been waiting to talk about this one.

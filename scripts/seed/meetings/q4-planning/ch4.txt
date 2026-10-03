@@ -1,0 +1,83 @@
+Aman: Thanks, Jordan. Okay, I'm going to share my screen, give me one second. Can everyone see slide one? It says "Pricing and Packaging, Q4 proposal."
+Daniel: We can see it. It's a very confident font.
+Aman: Thank you, I spent a while on the font. Right, so, where we are today. We charge one flat price, thirty-nine dollars per technician per month. Every customer gets every feature, whether they're a three-person plumbing shop or a four-hundred-technician outfit like Acme.
+Aman: That's simple, which is nice, but it means we're leaving money on the table at the top and we're probably scaring off the very small shops at the bottom. It also means that when a customer asks for something like the API, we have no way to charge for it.
+Moira: Is that actually a problem we hear a lot? The API thing?
+Aman: Fairly often, yeah. Mostly from the mid-size customers who want to wire us into their accounting or their own reporting. Karen can probably say more.
+Karen: A few, yes. I'll come back to that. Sorry, carry on, I don't want to derail your slides.
+Aman: No, that's fine. So the proposal is three tiers. Starter is twenty-nine dollars per technician per month, capped at five technicians, and there's no API access. Pro is forty-nine dollars per technician per month, and that includes the API, integrations and advanced reporting. And then Enterprise is custom pricing, with SSO, audit logs and a dedicated customer success manager.
+Aman: The thinking is that Starter gets a cheaper way in for tiny shops, Pro is where most of our customers will land, and Enterprise is where we finally price Acme-sized accounts properly instead of giving them the same rate as everyone else.
+Daniel: Just so I've understood. Existing customers at thirty-nine dollars, they'd go to Pro at forty-nine, which is a ten dollar jump. Or Starter, if they're small enough.
+Aman: Right, if they're five techs or fewer they could drop to Starter and pay less. Which is one of the things I'll let Tessa talk about, because she's modelled it.
+Tessa: Yes. So, I took the current account base and mapped every account to the tier it would most likely land in, based on technician count and which features they actually use today. The headline is that eighteen percent of current accounts would end up paying more.
+Tessa: Some of those go up a lot, because they use the API or the reporting heavily. A bigger share would actually pay less, because they'd fit in Starter. Net of all that, the model shows a six percent increase in ARR over twelve months, if churn stays flat.
+Tessa: I want to be very clear about that last clause, though. If churn stays flat. The model doesn't know how people will react.
+Rishi: Is six percent after the Starter discounts, or before?
+Tessa: After. It's net. The Starter downgrades are already netted out.
+Rishi: Fine. Just checking, because that's a thin margin if even a small number leave.
+Tessa: It is, yes. That's why I said it.
+Karen: Okay. Can I come in now? Because I have some real concerns and I'd rather say them before we all get excited about a six percent number.
+Jordan: Go ahead, Karen. That's what this is for.
+Karen: The accounts that are already churning are the small shops. We just talked about it in the numbers. Bayside Plumbing, the other two that downgraded after the summer. These are people who are watching every dollar. And our answer to them is a ten dollar increase, or a cheaper tier with a hard cap and no API?
+Aman: The Starter tier is cheaper though, so for them it's actually a decrease.
+Karen: For the ones with five techs or fewer, sure. What about the shop with six technicians? Or seven? They're too big for Starter, so they're on Pro, and they get a twenty-five percent price increase from thirty-nine to forty-nine, in the same quarter they were already thinking about leaving. I can name you a dozen accounts in that band.
+Tessa: There's a cliff at six, yes. I can show you how many accounts are sitting at six to eight technicians. It's a real cluster.
+Karen: It's a cluster of people who are going to call me, is what it is.
+Moira: What does a six-technician shop actually see, though? Do they get a message when they cross five, or does it just quietly bill them differently?
+Aman: Good question. Right now the plan is a banner in the app and an email, and then the next invoice reflects it.
+Moira: So the first they hear of it could be a banner. That's not great.
+Aman: No. Fair. I'll note that.
+Karen: And honestly, the competitor in Phoenix that Marcus keeps hearing about doesn't cap anything. They just charge a flat rate and throw in the kitchen sink.
+Tessa: I'd add that the Starter cap was my assumption in the model, not a measured threshold. Five was picked because it was a round number near the median of our smallest accounts.
+Karen: A round number. We're repricing people's businesses on a round number.
+Tessa: Which is why I'd like to look at the distribution again.
+Aman: Okay, but I think the answer there is to look at the cap. Maybe Starter should be up to eight.
+Rishi: Then you're giving away more margin on the people paying twenty-nine.
+Aman: That's true.
+Daniel: Can I be slightly unhelpful and observe that every cap in the world makes somebody feel like they've hit a wall? That's what caps are for.
+Karen: I'm not against tiers, Daniel. I'm against surprising people. If you tell a customer on a Tuesday that their bill is going up, and they never asked for it, you've given them a reason to look at the competition. Right now we're competing against spreadsheets and whiteboards, and those are free.
+Jordan: Karen, what would you want to see? Not whether to do it, but how to do it so it doesn't hurt.
+Karen: Don't touch anybody who's already with us. Grandfather them. Existing customers stay on thirty-nine until they choose to move, and the new pricing is only for people signing up fresh.
+Aman: How long, though? Forever?
+Karen: Not forever. A year, say. Long enough that nobody feels ambushed, and we can show them what they'd get if they upgrade.
+Tessa: That changes the model quite a bit. If existing accounts are held at current pricing for twelve months, the six percent doesn't show up in year one the way I described. It's more like the new signups carry it, and the existing base only moves when they opt into something.
+Aman: So it's slower, but safer.
+Tessa: Slower and safer, yes. Probably lower than six percent for the first twelve months. I'd have to rerun it to give you a proper number.
+Jordan: I think that's a trade I'm willing to make. We just talked about NRR being under target because of downgrades. I'm not keen on deliberately adding a price shock to the group that's already wobbling. Rishi, Daniel, any objections from the engineering side? It does mean running two price books.
+Daniel: Billing has to support two price books. Is that already the case, Aman?
+Aman: It's not hard. We already have plan versioning in the billing system for the old trial plans, so it's mostly configuration. I'll confirm with the billing engineers but I'm not worried.
+Daniel: Then no objection from me.
+Moira: Can I raise the thing I'm worried about, which is the pricing page? Because everything we're saying about Starter is going to be read, by a normal person, in about five seconds.
+Aman: Go for it.
+Moira: If Starter is the cheap one with the cap and no API, and Pro is the one with everything, the page can easily make Starter feel like a trap. Like, here's the thing we put out so you'll look at the real one. I don't want a tiny plumbing company to look at it and think we're trying to trick them.
+Karen: Yes. This.
+Moira: So I want the page to say what Starter is good for, in plain words. Who it's for, what you get, and what you do later if you grow. Not a grid of ticks and crosses where one column is mostly crosses.
+Aman: I like that. I did have a grid.
+Moira: I saw the grid.
+Aman: Okay, I can feel the grid going away.
+Moira: We can keep a comparison lower down for the people who want it. But the top of the page has to be human.
+Jordan: So for timing. If we grandfather, when do the new prices actually start for new signups?
+Aman: I'd suggest November first. It gives us about a month to get the billing configuration done and the page live.
+Tessa: November first works for the data side, as long as I have the dashboard before then.
+Jordan: Let me say where I think we've landed, and tell me if it's wrong. We go with three tiers. Existing customers are grandfathered on current pricing for twelve months. New pricing applies to new signups from November first. Any objection?
+Karen: That's fine with me. I'd still like to watch the six and seven technician accounts closely.
+Daniel: None.
+Rishi: No.
+Jordan: Good. That's decided.
+Aman: There's one more thing, and it's not decided, which is SSO. In my proposal SSO is Enterprise only. But I've heard it said that it should be in Pro, because even mid-size customers ask for it.
+Karen: They do. It's the thing the IT person asks about on the first call.
+Rishi: And it costs us real support effort, so I understand why you'd want to put it in Enterprise.
+Aman: Right. That's the tension. If it's in Pro, we lose a reason for people to buy Enterprise. If it's Enterprise only, we might lose mid-size deals.
+Jordan: I don't think we can settle that in this room, and I don't want to guess. I'll talk to three customers, a mix of sizes, and I'll decide by October fourteenth. Karen, can you help me pick them?
+Karen: Yes, I'll send you three names by the end of the week.
+Jordan: Great. So that one is mine. Decision by October fourteenth.
+Daniel: Which happens to be the day after our next check-in, so you'll have to tell us on the fly.
+Jordan: I'll send it round in writing, don't worry.
+Jordan: Let me do the actions for this section. Aman and Moira, can you finalise the pricing page copy by October sixteenth?
+Aman: Yes, sixteenth. Moira, I'll bring a draft, minus the grid.
+Moira: Deal. I'll block time on Monday.
+Jordan: Tessa, can you build a revenue impact dashboard, so we can watch what the new pricing does? By October ninth?
+Tessa: Yes, I can have that by the ninth. I'll include the rerun with grandfathering, and I'll flag the six to eight technician band specifically, for Karen.
+Karen: Thank you, Tessa.
+Jordan: Thank you, Aman. That was a good presentation, and a good argument.
+Aman: Thanks. Sorry about the font.

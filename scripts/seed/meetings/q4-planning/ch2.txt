@@ -1,0 +1,60 @@
+Tessa: Okay, so this is Q3 by the numbers. I'll go through the headline metrics first, and then we can talk about what's behind them. Please jump in if something doesn't make sense.
+Tessa: Starting with the big one. ARR ended Q3 at $14.2 million. That's up 9% quarter on quarter. Our target was 12%, so we missed it by three points. In dollar terms, that's roughly $400,000 short of where we wanted to be.
+Daniel: Sorry, can I check that? Three points on a base of thirteen and a bit million. That's around $390,000, so "roughly $400,000" is fair.
+Tessa: Yes, it's $390,000 or so. I rounded up, and I'm happy to be corrected by the VP of Engineering on arithmetic.
+Daniel: I'm only here for the arithmetic, Tessa. The actual engineering is incidental.
+Jordan: Okay, so nine against twelve. Not a disaster, but not what we promised the board either. Keep going.
+Tessa: Next, net revenue retention. We ended the quarter at 104%. The target was 110%, so that's the bigger miss, and honestly it's the one I'd focus on. New business came in roughly where we expected. The gap is mostly existing customers paying us less than they used to.
+Rishi: Sorry, is that 104% trailing twelve months, or just the quarter?
+Tessa: Trailing twelve months. If I annualise the quarter on its own, it looks worse, closer to 101%. But I'd stick with the twelve month number, because it's what the board sees.
+Rishi: Fine. I just wanted to know which one we were looking at.
+Tessa: Then SMB logo churn. That's the number of small customers we lose, not the dollar value. It's 2.1% monthly. If you compound that over a year, you lose about one in four small customers. That's the number that keeps me up at night.
+Karen: Say that last bit again, Tessa. One in four?
+Tessa: Roughly. 2.1% a month compounds to something like 22 or 23% a year. So yes, a little under one in four.
+Karen: Right. Hearing it that way makes it feel very different to a decimal point.
+Tessa: That's why I like saying it that way. Okay, some good news now. Activation. We define that as a new account completing their first dispatched job within fourteen days of signing up. Before August, that was 38%. After onboarding version one shipped in August, it went up to 44%. That's six points in a single quarter, which is the biggest quarterly movement we've seen on that metric.
+Moira: That's lovely. Can I ask a question about that? Do we know what drove it? Because onboarding v1 had a few things in it. There was the checklist, and there was the sample data, where we pre-populate a few fake customers and jobs so the board isn't empty on day one.
+Tessa: Good question, and yes, I've looked at it. I ran it as a split, comparing accounts that engaged with each feature. My best estimate is about sixty percent of the lift came from the sample data and forty percent from the checklist. So mostly sample data.
+Moira: Interesting. Sixty forty, you said?
+Tessa: Sixty forty, yes. With the caveat that it isn't a controlled experiment. People who use the checklist are probably more motivated to begin with. So treat it as a direction, rather than a precise figure.
+Moira: That's a relief, honestly, because I was quietly afraid it was the checklist. We argued about that checklist for three weeks.
+Daniel: And it turns out the best onboarding feature is fake customers. I'm going to put that on a poster.
+Moira: It's not fake customers, Daniel, it's a realistic starting state.
+Daniel: A realistic starting state of fictional plumbers. Lovely.
+Tessa: Okay, last headline number. Mobile crash-free sessions are at 99.1%. That's up slightly from the previous quarter, and it's above our internal bar of 99%, though I know Priya would prefer a bit more headroom.
+Priya: I would, yes. Ninety-nine point one is fine, but I'd feel better at 99.5. We can talk about that separately, though. It's not going to be the focus today.
+Tessa: Agreed. So, that's the summary. ARR at $14.2 million, up 9% against a 12% target. NRR 104% against 110%. SMB logo churn at 2.1% monthly. Activation up from 38% to 44%. And mobile crash-free sessions at 99.1%.
+Jordan: Thanks, Tessa. That's clear. Before we go on, I want to dig into the NRR miss, because that's the one I've been asked about most. What's behind it?
+Tessa: Mostly downgrades in the small and medium business segment. When I look at the cohort data, the pattern is shops cutting seats after the summer peak. HVAC is highly seasonal. Shops hire extra technicians in June, July and August, when air conditioning calls are through the roof, then they let people go in September, and they shrink their seat count to match.
+Rishi: Is that new, though? Presumably they did that last year as well.
+Tessa: They did, but last year we had more expansion to offset it. Seat growth in the spring and early summer was stronger. This year the expansion was weaker, so the September contraction showed up more clearly in the net number.
+Rishi: So the downgrades aren't higher than last year, it's the offset that's lower.
+Tessa: Partly. I'd say it's a bit of both. The downgrades were a bit higher too, but the expansion shortfall is the bigger factor.
+Karen: Can I add some colour from the customer side? Because I think the numbers are real, but there's a story behind them.
+Jordan: Please do.
+Karen: Three of the downgrades that I personally spoke to were small shops. Bayside Plumbing went from twelve seats to seven. Cornerstone Heating, in Ohio, went from nine seats to five. And Delgado Electric dropped from eight to four. None of them left, which is the good news. But all three said the same thing, which is that the summer hires were seasonal and they didn't see the point of paying for seats nobody was using.
+Daniel: Which is entirely reasonable, to be fair.
+Karen: Completely reasonable. And two of the three said they'd come back up in the spring, when the busy season starts again. Cornerstone said they'd probably have added seats in October if the heating season looked strong. So some of this is timing, not damage.
+Tessa: That fits the data. I can see some of those accounts hovering at a lower seat count, but with activity patterns that look healthy. They're not disengaged, they're just smaller for now.
+Moira: Is there anything the product could do about that? Like pause seats instead of dropping them?
+Karen: I've had a customer ask for exactly that. A seasonal pause, so you keep your configuration and your history, but you don't pay for the idle months.
+Jordan: That's an interesting idea, but let's hold it. I'd rather not open a new topic in the middle of the numbers review. Aman, maybe that's a note for the pricing discussion.
+Aman: Noted. I'll put it on the slide for later. It might actually fit well with the tier structure.
+Jordan: Good. Park it until then.
+Daniel: Can I just say something about the dashboards? Because I've seen four different versions of the ARR number in the last month. One in the finance report, one in the board deck, one on the wall display in the office, and I'm fairly sure there's a fifth on somebody's laptop.
+Tessa: There are three, Daniel. The fourth one is a stale export that someone keeps circulating.
+Daniel: Which only proves my point. I'm not complaining. I'm simply saying that I've now got a sort of mystery game in my life, called "which ARR is the right one."
+Tessa: The right one is the one I just showed you. $14.2 million. I'll make sure the wall display matches it.
+Daniel: Splendid. That's all I ask.
+Jordan: Let me pull this together, because I want to make sure we all take the same thing away. The headline is that growth and retention both came in under target, and a good chunk of the retention miss is seasonal. Shops shrinking after the summer peak, and some of them likely to come back. That's important, because it means it isn't all structural.
+Jordan: But the thing I really want us to notice is the activation number. Going from 38% to 44% in a single quarter is a real win, and the sample data seems to be most of it. That's the thing to double down on. If we can get more people to their first dispatched job faster, that feeds everything else, retention included.
+Moira: I completely agree. And honestly, if sixty percent of the lift is from sample data, there's probably more we can do there. Better sample jobs, trade-specific ones. Plumbing, HVAC and electrical each have different shapes of work.
+Jordan: That's exactly the sort of thing I'd like to see. Moira, can you and Tessa have a think about what the next version of onboarding looks like? I'm not asking for a plan today. Just something to bring up at our next check-in.
+Moira: Sure, I can do that. Tessa, shall we find half an hour this week?
+Tessa: Yes, let's do that. I'll send you something for Thursday.
+Moira: Thursday works for me.
+Jordan: Great. Any other questions on the numbers before we move on?
+Priya: Just a quick one. Do we know yet whether the new accounts from August and September are keeping that higher activation, or is it just the first couple of weeks?
+Tessa: It's too early to say for the September cohort, but the August cohort looks stable at day thirty. I'll share an update when I have another month of data.
+Priya: Perfect, thank you.
+Jordan: Okay. Thanks, Tessa, that was really useful. Priya, are you ready? Offline mode.

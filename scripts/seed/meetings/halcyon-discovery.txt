@@ -1,0 +1,75 @@
+Marcus: Linda, hi, can you hear me okay?
+Linda: I can, yes. Sorry, I'm in the truck, so if I cut out that's the Phoenix traffic. I've pulled over, though, so I'm all yours.
+Marcus: No problem at all. Thanks for making time on a Thursday afternoon. I know it's been a busy week for you.
+Linda: It's always a busy week. We had three air conditioners die on one street this morning. Even in October it's still ninety-five here.
+Marcus: Ha, that's Phoenix for you. Well, that's partly why I wanted to talk. I'm Marcus Bell, I'm an account executive here at Fieldnote. I looked at your website, but I'd much rather hear it from you. Can you tell me a bit about Halcyon and what your role looks like day to day?
+Linda: Sure. Halcyon Home Services, we do residential HVAC and plumbing across the Phoenix metro. We've got about sixty technicians now, which is up from forty-five two years ago. I'm the Director of Operations, so basically I own scheduling, dispatch, the field crews, and I get the angry phone calls when it goes wrong.
+Marcus: Sixty techs is a real operation. How are you running dispatch today?
+Linda: Honestly? Spreadsheets and a whiteboard. We've got a big whiteboard in the office with magnets for each tech, and then a Google Sheet that the dispatchers update. And they text the techs. It worked fine at twenty techs. It does not work at sixty.
+Marcus: What breaks first when it stops working?
+Linda: Double-booking. Almost every week we send two techs to the same address, or worse, we promise a customer a two-hour window and nobody's actually assigned. Last month we had a tech show up at a house where another tech had already finished the job. The customer was not happy, and we ate the cost of the trip.
+Marcus: Ouch. How often does that happen, roughly?
+Linda: I'd say five or six times a month that I hear about. Probably more that I don't.
+Marcus: And what does that cost you, if you had to put a number on it?
+Linda: A wasted truck roll is about a hundred and fifty dollars in labor and fuel, and then there's the review the customer leaves. I haven't done the exact math, but it's real money.
+Marcus: Got it. What else is on the list?
+Linda: Visibility. I have no idea where my techs are during the day. If a customer calls and asks where the technician is, the dispatcher has to call or text the tech and wait. Sometimes ten minutes goes by. And then invoicing. That's the one that keeps our owner up at night.
+Marcus: Tell me more about invoicing.
+Linda: So the tech finishes the job, writes it up on paper or sometimes in a notes app, and drops the paperwork at the office at the end of the week. Someone in the back keys it into QuickBooks. When we measured it last quarter, the average time from finishing a job to sending the invoice was nine days.
+Marcus: Nine days. That's a lot of cash sitting out there.
+Linda: Right. We're not a huge company, so nine days of delay on everything is a cash flow problem. Our CFO, Raymond, brings it up in every single meeting.
+Marcus: That makes sense. Have you looked at other software before this?
+Linda: Yes. We did a trial of one of the big names, I won't say which one, earlier this year. Six weeks. It had every feature you could imagine, but my dispatchers hated it. It took twelve clicks to schedule a job. The techs wouldn't use the app because it was too much. We went back to the whiteboard after a month.
+Marcus: That's really useful to hear. When you say too complex, what would simple look like for your dispatchers?
+Linda: One screen. I want to see all my techs, see their day, drag a job onto someone, and have that tech get it on their phone. That's it. If I can do that without a training course, I'm happy.
+Marcus: That's pretty much what we build. We have a web dispatch board for the office and a mobile app for the technicians. I want to make sure I show you the right things, so can I ask about a few more areas?
+Linda: Sure.
+Marcus: Who's the team looking at this? You mentioned your CFO and an owner.
+Linda: So I'm leading the evaluation. The owner is Tom Halvorsen, he started the company. And Raymond, the CFO. The three of us make the decision together. Tom will want to see it before we sign anything, and Raymond is going to care about price and about how it fits with QuickBooks.
+Marcus: Great, so you, Tom and Raymond. Is there anyone else who'd have a say, like an IT person or a dispatch lead?
+Linda: Not really. I'll bring in my lead dispatcher for the demo, she'll be the real user. But the decision is the three of us.
+Marcus: Perfect. And what's the timeline? Is there a date you're working toward?
+Linda: We've got budget approved for the first quarter of next year. We want to decide by the middle of December so we can roll out in January, before the spring ramp starts in March. Honestly, if we miss that window we'll just limp through another summer.
+Marcus: So decision by mid-December, go live in Q1. Is the budget something you can share a range on, or is that not something you want to get into yet?
+Linda: I can give you a ballpark. We set aside around forty thousand dollars for the first year, all in. That includes software and any setup.
+Marcus: That's helpful, thank you. We'll make sure the proposal is sized for that. Do you have a number in your head per technician?
+Linda: Under fifty dollars a tech a month would be great. The competitor we tried was quoting us closer to eighty.
+Marcus: Understood. I'll get you pricing on Monday, and you'll see where we land. Now, I mentioned the mobile app. What do your techs need from it?
+Linda: Two things. A lot of our work is in attics, crawlspaces and basements. Well, Phoenix doesn't have many basements, but we have a lot of new builds with no signal, and also some older neighborhoods with bad coverage. So, does the app work when there's no signal?
+Marcus: That's a great question, and I'm going to bring in Jordan Lee, our VP of Product, who's joining us on the line. Jordan, are you there?
+Jordan: I am, hi everyone. Sorry, I was on mute. Hi Linda, nice to meet you.
+Linda: Hi Jordan.
+Jordan: So, offline mode is something we're shipping right now. Full offline editing is targeted for November 12th. But before that, on October 27th, we're releasing a read-only offline version to a beta group. The tech can open the job details, see the customer history, and take photos, and the photos queue up and upload automatically once they're back in coverage.
+Linda: Okay, so they can see the job but they can't change it until they're back online.
+Jordan: Right, for the first release. Edits like status changes and notes will come with the November release. Would read-only be useful for you at first?
+Linda: Honestly, yes. The big problem is that the tech gets to a house, has no signal, and can't even see the address notes. Seeing the job and uploading photos later would solve most of it.
+Jordan: That's the thing we heard from other customers too. Would you be interested in being part of the beta?
+Linda: Maybe. Let me see how the demo goes. What does the beta involve?
+Jordan: We're taking about twenty customers. You'd get early access and a direct line to our mobile team. I'll send you the details today, so you can decide. No pressure.
+Linda: That would be great. Thanks.
+Marcus: Linda, the other thing you mentioned was QuickBooks. How are you using it now?
+Linda: QuickBooks Online. Raymond lives in it. Our bookkeeper keys everything in from the paper invoices. So if there's any way to push the invoices straight in, that would cut a lot of that nine days.
+Jordan: We have a QuickBooks Online sync. When a job is completed and invoiced in Fieldnote, the invoice goes across to QuickBooks, including the customer record and line items. Payments sync back, so Raymond sees them in QuickBooks without anyone retyping anything.
+Linda: Does it handle our customer list? We've got about eleven thousand customers in there.
+Jordan: You'd import your customers on setup, and we match them against QuickBooks so you don't create duplicates. Eleven thousand is fine. Our onboarding team does that with you.
+Linda: Good. Raymond will want to ask about that himself, I'm sure.
+Marcus: We'll make sure he can. Actually, that's a good thing to add to the demo. Would Tom and Raymond both be able to join a demo?
+Linda: I think so. Tom's travelling next week but he's back early. What about next Wednesday or Thursday?
+Marcus: Thursday, October 8th works for me. Would the morning be okay?
+Linda: Thursday the eighth at ten would work. I'll make sure Tom is there. Raymond might drop in for the QuickBooks part.
+Marcus: Great, I'll send the invite as soon as we hang up. I'll tailor the demo to what you told me today, double-booking, seeing where the techs are, and the invoice flow into QuickBooks. Does that sound right?
+Linda: Yes, that's exactly it. Add the offline piece too.
+Marcus: Will do. Two more things. Since this is going to touch customer data and payments, Raymond and probably Tom will want to see our security practices. I'll send a security questionnaire and the pricing on Monday, so you've got both before the demo. Is that okay?
+Linda: Yes, please. That would help me a lot, because I know the first thing Raymond will ask is where the data lives.
+Marcus: Monday, October 5th, then. And Jordan, you'll send the offline beta details?
+Jordan: Yes, I'll send those over to Linda today.
+Linda: Thank you both.
+Marcus: Linda, before we go, is there anything I should have asked and didn't? Any concern we should be ready for?
+Linda: One thing. We've been burned by software that looks great in the demo and then takes months to set up. I need to know that it can be running by January, not March.
+Marcus: That's fair, and we'll bring someone from onboarding to the demo to walk through the timeline. With sixty techs and a January start, we'd want to begin setup around the first week of December, so you'd want to sign by early December. I'll show the plan on the eighth.
+Linda: Good. That works for me.
+Marcus: Great. So to recap, Thursday October 8th at ten, a tailored demo with you, Tom and your lead dispatcher, and Raymond for QuickBooks. I'll send the security questionnaire and pricing by Monday. Jordan sends the offline beta information today. Did I miss anything?
+Linda: No, that's it. I'll tell Tom to hold the time.
+Jordan: Thanks, Linda. It was great hearing about this. Good luck with the heat.
+Linda: Ha, thanks. Talk soon.
+Marcus: Thanks, Linda. Bye.

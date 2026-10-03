@@ -1,0 +1,57 @@
+Jordan: Morning, Aman. Can you hear me okay?
+Aman: Morning! Yep, loud and clear. Sorry, one sec, I'm just closing about forty tabs.
+Jordan: Take your time. How was your week? You've been heads down on the pricing deck.
+Aman: Honestly, it's been a lot. I think I slept about five hours a night, but I'm okay. How about you?
+Jordan: Busy, but good. Okay, let's use the time well, I've got about eight minutes before my next one. What do you want to cover?
+Aman: I have three things. How Tuesday went with pricing, what I should do about Karen, and the Enterprise tier. Is that all right?
+Jordan: Perfect. Start with Tuesday. How do you think it landed?
+Aman: Mixed. I think the structure of the tiers got a good reception. Starter, Pro and Enterprise, the numbers were mostly accepted. Tessa's model helped a lot. But I walked out feeling pretty beaten up.
+Jordan: Tell me what you mean by beaten up.
+Aman: Karen. She pushed back really hard. When she said small shops are the ones already churning, it felt like she was saying I hadn't thought about customers. I spent three weeks on that deck, and I did look at the churn data. It felt kind of personal.
+Jordan: I hear you. Can I offer another read on it?
+Aman: Please.
+Jordan: I don't think it was about you at all. Karen is the person who takes the phone call when Bayside Plumbing cancels. When she hears a price change, she hears that phone call. She was defending the customers she sees, and honestly, her pushback is what got us to grandfathering for twelve months. That decision is much better than where we started.
+Aman: Okay, that's fair. I guess I did hear the grandfathering piece as a win.
+Jordan: It was a win, and it was partly because of her. The feedback made the proposal better, and the room saw that you could take it on board and adjust. That counts for a lot.
+Aman: I didn't think of it like that. I felt defensive in the moment, and I think it showed.
+Jordan: A little, yes. Not badly. You went a bit fast through the churn slide when she asked about it, and that made it sound like you were skipping past it. Next time, I'd lead with that slide.
+Aman: Lead with the risk. Okay.
+Jordan: Exactly. Show you've already thought about her objection, and she has less to push on. And I'd go further. Before the next pricing review, do a pre-read with Karen. Walk her through the deck privately, let her tear it apart in a one-on-one, and then she shows up already knowing what's in it.
+Aman: That's smart. So there are no surprises for her either.
+Jordan: Right. She'll still push, because that's her job, but it will be a conversation rather than an ambush.
+Aman: Okay. Should I set that up soon? The next review isn't until later this month, but I could do it this week.
+Jordan: Yes, this week. Can you set up a thirty-minute sync with Karen before Friday? Actually, scratch that, it's already Friday. By the end of next Wednesday, sorry. Let's say the sync happens by Wednesday, October 7th.
+Aman: Got it. I'll send her a calendar invite this morning for something early next week and make it clear it's a pre-read, not a defence of the deck.
+Jordan: Good. And frame it as asking for her help. Ask her where the pricing would hurt her accounts most.
+Aman: Yeah, I like that. She'll have the specific names, and I can put them in the model with Tessa.
+Jordan: That would be a good use of it. Tessa's building the revenue impact dashboard by next Friday, the ninth, so you can feed the account names in.
+Aman: Perfect. Okay, that's one and two done. Can I move to the Enterprise tier?
+Jordan: Go ahead.
+Aman: So, I'd really like to lead the Enterprise tier launch. I know SSO is still undecided, whether it goes in Pro or Enterprise only, and you said you'd decide after talking to customers. But whichever way that goes, Enterprise is where the big accounts are, and I think it needs one owner who pulls together the pricing, the packaging, the sales enablement, and the page.
+Jordan: I like that you're asking for it. Tell me why you.
+Aman: Because I've been in the numbers for a month. I know where the custom pricing breaks. I've talked to Marcus about how the sales team quotes enterprise deals, and I think there's a gap, there's no standard way to price a deal with four hundred technicians versus forty. I could build a framework.
+Jordan: That's a real gap, and Acme is the perfect example. They're four hundred technicians, they have an SSO requirement, and we'd be quoting them from scratch.
+Aman: Exactly. And I have thoughts on the audit log packaging too.
+Jordan: Okay. My answer is yes, with one condition. The pricing page has to ship on time. Moira and you have until the sixteenth of October for the copy. If that lands on the date, with no scramble, you've shown me the discipline, and I'll make you the owner of the Enterprise tier launch.
+Aman: Okay. That's very fair. I can do that. Moira and I already have a rough draft of the Starter and Pro sections.
+Jordan: Great. The one thing I'd watch is the Starter copy. Moira's concern was that it can't feel like a trap, so give her time to react to it, don't send her a finished page the day before.
+Aman: Right. I'll share the draft with her on Monday and set a review for midweek.
+Jordan: Perfect. And on SSO, I'm talking to three customers about it. I'm hoping to have a decision by October 14th. I've already had one call, with a mid-sized electrical contractor, and it was useful. They said SSO is an absolute requirement for their IT team but they'd pay the Pro price for it, but wouldn't pay the Enterprise price.
+Aman: Oh, that's interesting. That's a data point for putting it in Pro.
+Jordan: It's one data point, and Acme will say the opposite, so I'm not drawing conclusions yet. But you should have the notes. I'll share the SSO customer call notes with you. Let me get those to you by Monday.
+Aman: That would be great. Monday, October 5th?
+Jordan: Yes, Monday the fifth. They're in a messy doc right now, so I'll tidy them up first.
+Aman: No rush on tidy. I'd rather have messy notes than wait.
+Jordan: Ha, okay. Messy notes by Monday, then.
+Aman: Thanks. One more thing, and I know we're short on time. Is it okay if I ask for some feedback on the deck itself? Not about Karen, just the presentation.
+Jordan: Sure, quickly.
+Aman: Was it too long? I had twenty-two slides and I think I lost some people around slide fourteen.
+Jordan: A bit, yes. Daniel was checking his phone around slide twelve. I'd cut to ten slides. The tiers, the model, the risks, and the decision you need. Put the rest in an appendix.
+Aman: Ten slides. I can do that. I do tend to over-prepare.
+Jordan: It's one of your strengths, honestly. Just keep the extra material in your back pocket for when someone asks.
+Aman: Okay. That's really helpful. I feel a lot better than I did when I joined the call.
+Jordan: Good. For what it's worth, the pricing work is solid. People are going to remember that the proposal was thought through. Let's make sure the next review feels like that.
+Aman: Thanks, Jordan. I appreciate it.
+Jordan: Let me recap so we're both on the same page. You'll set up a thirty-minute sync with Karen by Wednesday, October 7th, as a pre-read. I'll send you the SSO customer call notes by Monday. You and Moira get the pricing page copy done by October 16th, and if that ships on time, you lead the Enterprise tier launch. Did I miss anything?
+Aman: No, that's all of it. Thanks, Jordan. Have a good weekend!
+Jordan: You too. Go sleep.
