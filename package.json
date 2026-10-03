@@ -11,7 +11,6 @@
     "cf-typegen": "wrangler types worker/worker-configuration.d.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.131.0",
     "@supabase/supabase-js": "^2.117.2",
     "clsx": "^2.1.1",
     "hono": "^4.13.12",

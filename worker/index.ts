@@ -1,8 +1,7 @@
 import { Hono } from "hono";
 import type { AppEnv } from "./env";
 import { adminClient } from "./supabase";
-
-export const DEMO_EMAIL = "demo@fieldnote.example";
+import { DEMO_EMAIL } from "../shared/demo.ts";
 
 const app = new Hono<AppEnv>().basePath("/api");
 
