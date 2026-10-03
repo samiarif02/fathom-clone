@@ -102,7 +102,7 @@ export function Transcript({ segments, participants, ms, onSeek, focus, onClearF
               </div>
               <button
                 onClick={(e) => { e.stopPropagation(); onHighlightLine(s); }}
-                className="absolute right-2 top-2 hidden rounded-md bg-white p-1 text-zinc-400 shadow-sm ring-1 ring-zinc-200 hover:text-amber-500 group-hover:block"
+                className="absolute right-2 top-2 rounded-md bg-white p-1 text-zinc-400 shadow-sm ring-1 ring-zinc-200 hover:text-amber-500 focus-visible:opacity-100 pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100"
                 title="Highlight this moment" aria-label="Highlight this moment"
               >
                 <Star className="size-3.5" />

@@ -89,12 +89,17 @@ export function HighlightList({ highlights, onSeek, onChange }: {
     const token = h.share_token ?? newToken();
     if (!h.share_token) {
       const { error } = await sb.from("highlights").update({ share_token: token }).eq("id", h.id);
-      if (error) return alertError(error.message);
+      if (error) return console.error(error.message);
       onChange(highlights.map((x) => (x.id === h.id ? { ...x, share_token: token } : x)));
     }
-    await navigator.clipboard.writeText(clipUrl(token));
-    setCopied(h.id);
-    setTimeout(() => setCopied(null), 2000);
+    // The link is shown under the highlight either way; copying is a convenience.
+    try {
+      await navigator.clipboard.writeText(clipUrl(token));
+      setCopied(h.id);
+      setTimeout(() => setCopied(null), 2000);
+    } catch {
+      /* clipboard blocked (e.g. window not focused) */
+    }
   }
 
   async function unshare(h: Highlight) {
@@ -146,8 +151,4 @@ export function HighlightList({ highlights, onSeek, onChange }: {
       ))}
     </ul>
   );
-}
-
-function alertError(msg: string) {
-  console.error(msg);
 }

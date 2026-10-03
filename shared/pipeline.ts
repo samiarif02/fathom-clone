@@ -65,10 +65,43 @@ async function askJson<T>(ai: AiRunner, prompt: string, maxTokens = 6000): Promi
   return JSON.parse(text.slice(start, end + 1)) as T;
 }
 
-const lineMs = (ctx: Ctx, line: unknown) => {
+const lineIndex = (ctx: Ctx, line: unknown) => {
   const n = typeof line === "number" ? line : Number.parseInt(String(line ?? "").replace(/^L/, ""), 10);
-  return Number.isFinite(n) && ctx.segments[n] ? ctx.segments[n].start_ms : null;
+  return Number.isFinite(n) && ctx.segments[n] ? n : null;
 };
+const lineMs = (ctx: Ctx, line: unknown) => {
+  const n = lineIndex(ctx, line);
+  return n == null ? null : ctx.segments[n].start_ms;
+};
+
+const STOP = new Set("the and for that this with have from they will what when were been about into than then them there their would could should which also just like yeah okay right think going know really because need needs want make sure said says agreed agree discussed meeting team".split(" "));
+const keywords = (text: string) =>
+  new Set((text.toLowerCase().match(/[a-z0-9$%]+(?:[.,][0-9]+)?/g) ?? []).filter((w) => (w.length > 2 || /\d/.test(w)) && !STOP.has(w)));
+const overlap = (a: Set<string>, b: Set<string>) => {
+  let score = 0;
+  for (const w of a) if (b.has(w)) score += /\d/.test(w) ? 3 : 1;
+  return score;
+};
+
+/**
+ * The model sometimes cites the wrong line. Keep its citation unless that line and its
+ * neighbours share essentially nothing with the bullet; then re-anchor to the line that
+ * shares the most keywords (ties go to the earliest).
+ */
+export function anchorMs(segments: { start_ms: number; text: string }[], text: string, cited: number | null) {
+  const want = keywords(text);
+  const citedMs = cited == null ? null : segments[cited].start_ms;
+  if (!want.size) return citedMs;
+  const scores = segments.map((s) => overlap(want, keywords(s.text)));
+  const top = Math.max(...scores);
+  if (cited != null) {
+    const near = [cited - 2, cited - 1, cited, cited + 1, cited + 2, cited + 3].filter((i) => i >= 0 && i < segments.length);
+    if (Math.max(...near.map((i) => scores[i])) >= 2) return citedMs;
+  }
+  if (top < 4) return citedMs;
+  return segments[scores.indexOf(top)].start_ms; // best match; ties go to the earliest line
+}
+const anchored = (ctx: Ctx, text: string, line: unknown) => anchorMs(ctx.segments, text, lineIndex(ctx, line));
 
 export async function generateChapters(db: SupabaseClient, ai: AiRunner, meetingId: string, ctx?: Ctx) {
   ctx ??= await load(db, meetingId);
@@ -131,7 +164,7 @@ ${transcriptText(ctx)}`,
 
   const sections: SummarySection[] = out.sections
     .filter((s) => s.bullets?.length)
-    .map((s) => ({ heading: s.heading, bullets: s.bullets.map((b) => ({ text: b.text, at_ms: lineMs(ctx, b.line) })) }));
+    .map((s) => ({ heading: s.heading, bullets: s.bullets.map((b) => ({ text: b.text, at_ms: anchored(ctx, b.text, b.line) })) }));
   const plain = sections.map((s) => `${s.heading}\n${s.bullets.map((b) => b.text).join("\n")}`).join("\n\n");
   const { error } = await db
     .from("summaries")
@@ -146,7 +179,7 @@ ${transcriptText(ctx)}`,
     };
     await db.from("action_items").delete().eq("meeting_id", meetingId);
     const rows = out.action_items.map((a, idx) => ({
-      meeting_id: meetingId, idx, text: a.text, assignee_participant_id: findPerson(a.assignee), at_ms: lineMs(ctx, a.line),
+      meeting_id: meetingId, idx, text: a.text, assignee_participant_id: findPerson(a.assignee), at_ms: anchored(ctx, a.text, a.line),
     }));
     if (rows.length) {
       const { error: aErr } = await db.from("action_items").insert(rows);
