@@ -6,6 +6,7 @@ import { DEMO_EMAIL } from "../shared/demo.ts";
 import { generateSummary, type AiRunner } from "../shared/pipeline.ts";
 import { templateById, type TemplateId } from "../shared/templates.ts";
 import { processNext, uploads } from "./uploads";
+import { calendar } from "./calendar";
 
 const app = new Hono<AppEnv>().basePath("/api");
 
@@ -69,6 +70,7 @@ app.get("/public/clips/:token", async (c) => {
 
 // ---- Signed-in routes ----------------------------------------------------------------
 app.route("/uploads", uploads);
+app.route("/calendar", calendar);
 app.use("/meetings/*", requireUser);
 
 app.post("/meetings/:id/process", async (c) => {

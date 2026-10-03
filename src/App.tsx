@@ -7,6 +7,7 @@ import Meetings from "./pages/Meetings";
 import MeetingPage from "./pages/meeting/MeetingPage";
 import Clip from "./pages/Clip";
 import NewRecording from "./pages/NewRecording";
+import Upcoming from "./pages/Upcoming";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
@@ -25,6 +26,7 @@ export default function App() {
         <Route index element={<Meetings />} />
         <Route path="/meetings/:id" element={<MeetingPage />} />
         <Route path="/new" element={<NewRecording />} />
+        <Route path="/calendar" element={<Upcoming />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
