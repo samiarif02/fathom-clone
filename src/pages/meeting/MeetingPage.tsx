@@ -68,7 +68,7 @@ export default function MeetingPage() {
   // Keyboard: space toggles playback, ←/→ skip 5s (ignored while typing).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement).closest("input,textarea,[contenteditable]")) return;
+      if ((e.target as Element | null)?.closest?.("input,textarea,button,[contenteditable]")) return;
       if (e.key === " ") { e.preventDefault(); player.toggle(); }
       if (e.key === "ArrowRight") player.seek(player.ms + 5000, !player.ref.current?.paused);
       if (e.key === "ArrowLeft") player.seek(Math.max(0, player.ms - 5000), !player.ref.current?.paused);
