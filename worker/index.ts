@@ -5,6 +5,7 @@ import { serveMedia, signedMediaUrl } from "./media";
 import { DEMO_EMAIL } from "../shared/demo.ts";
 import { generateSummary, type AiRunner } from "../shared/pipeline.ts";
 import { templateById, type TemplateId } from "../shared/templates.ts";
+import { processNext, uploads } from "./uploads";
 
 const app = new Hono<AppEnv>().basePath("/api");
 
@@ -67,7 +68,14 @@ app.get("/public/clips/:token", async (c) => {
 });
 
 // ---- Signed-in routes ----------------------------------------------------------------
+app.route("/uploads", uploads);
 app.use("/meetings/*", requireUser);
+
+app.post("/meetings/:id/process", async (c) => {
+  const result = await processNext(c.env, workersAi(c.env), c.get("token"), c.req.param("id"));
+  if ("error" in result && result.error === "Meeting not found") return c.json(result, 404);
+  return c.json(result);
+});
 
 app.get("/meetings/:id/media-url", async (c) => {
   const { data } = await userClient(c.env, c.get("token"))

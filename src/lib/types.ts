@@ -28,6 +28,7 @@ export type MeetingDetail = {
   duration_ms: number;
   status: "processing" | "ready" | "failed";
   error: string | null;
+  stage: "uploading" | "transcribe" | "transcribing" | "analyze" | "analyzing" | "done";
   source: string;
   media_kind: "video" | "audio" | null;
   participants: Participant[];

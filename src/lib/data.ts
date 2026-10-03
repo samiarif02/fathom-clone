@@ -28,7 +28,7 @@ export async function getMeeting(id: string): Promise<MeetingDetail> {
   const sb = await getSupabase();
   const [m, segments] = await Promise.all([
     sb.from("meetings")
-      .select("id,title,started_at,duration_ms,status,error,source,media_kind,participants(*),chapters(*),summaries(template,sections,created_at),action_items(*),highlights(*)")
+      .select("id,title,started_at,duration_ms,status,error,stage,source,media_kind,participants(*),chapters(*),summaries(template,sections,created_at),action_items(*),highlights(*)")
       .eq("id", id)
       .single(),
     sb.from("transcript_segments").select("id,idx,start_ms,end_ms,text,participant_id").eq("meeting_id", id).order("idx").limit(5000),

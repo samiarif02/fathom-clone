@@ -39,12 +39,25 @@ export default function MeetingPage() {
     return () => { live = false; };
   }, [id]);
 
-  // Still processing (fresh upload): poll until the AI notes land.
+  // Fresh upload: drive the resumable pipeline (transcribe, then chapters + notes) one step at a
+  // time, and poll while another tab holds a step. Leaving and coming back picks up where it was.
   useEffect(() => {
     if (meeting?.status !== "processing") return;
-    const t = setInterval(() => getMeeting(id!).then(setMeeting), 5000);
-    return () => clearInterval(t);
-  }, [meeting?.status, id]);
+    let live = true;
+    const step = async () => {
+      if (meeting.stage === "transcribe" || meeting.stage === "analyze") {
+        await api(`/meetings/${id}/process`, { method: "POST" }).catch(() => {});
+      } else {
+        await new Promise((r) => setTimeout(r, 5000));
+      }
+      if (!live) return;
+      const fresh = await getMeeting(id!);
+      if (live) setMeeting(fresh);
+      if (fresh.status === "ready") api<{ url: string }>(`/meetings/${id}/media-url`).then((r) => live && setMediaUrl(r.url)).catch(() => {});
+    };
+    step();
+    return () => { live = false; };
+  }, [meeting?.status, meeting?.stage, id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Deep link from search or a shared moment: ?t=<ms>
   useEffect(() => {
@@ -101,7 +114,8 @@ export default function MeetingPage() {
 
           {meeting.status === "processing" && (
             <div className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
-              <Loader2 className="size-4 animate-spin" /> Transcribing and writing notes. This page updates on its own.
+              <Loader2 className="size-4 animate-spin" />
+              {meeting.stage === "uploading" ? "Waiting for the upload to finish." : meeting.stage.startsWith("transcrib") ? "Transcribing and labelling speakers…" : "Finding chapters and writing notes…"} This page updates on its own.
             </div>
           )}
           {meeting.status === "failed" && (
@@ -178,6 +192,7 @@ export default function MeetingPage() {
             <Speakers
               participants={meeting.participants} segments={meeting.segments} duration={meeting.duration_ms} ms={player.ms}
               onSeek={seek} focus={focus} onFocus={(f) => { setFocus(f); if (f) setTab("transcript"); }}
+              onRename={(pid, name) => setMeeting({ ...meeting, participants: meeting.participants.map((p) => (p.id === pid ? { ...p, name } : p)) })}
             />
           </Card>
 

@@ -1,15 +1,25 @@
-import { useMemo } from "react";
-import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight, Filter, Pencil } from "lucide-react";
+import { getSupabase } from "../../lib/supabase";
 import clsx from "clsx";
 import type { Participant, Segment } from "../../lib/types";
 import { Avatar } from "../../components/Avatar";
 import { clock } from "../../lib/format";
 
 /** Talk time per person, a lane showing when each person spoke, and prev/next jumps through their turns. */
-export function Speakers({ participants, segments, duration, ms, onSeek, focus, onFocus }: {
+export function Speakers({ participants, segments, duration, ms, onSeek, focus, onFocus, onRename }: {
   participants: Participant[]; segments: Segment[]; duration: number; ms: number;
   onSeek: (ms: number) => void; focus: string | null; onFocus: (id: string | null) => void;
+  onRename: (id: string, name: string) => void;
 }) {
+  const [editing, setEditing] = useState<string | null>(null);
+  async function rename(id: string, name: string) {
+    setEditing(null);
+    const clean = name.trim();
+    if (!clean) return;
+    onRename(id, clean);
+    await (await getSupabase()).from("participants").update({ name: clean }).eq("id", id);
+  }
   const stats = useMemo(() => {
     const total = segments.reduce((a, s) => a + (s.end_ms - s.start_ms), 0) || 1;
     return participants
@@ -37,7 +47,16 @@ export function Speakers({ participants, segments, duration, ms, onSeek, focus, 
                 <Avatar name={p.name} color={p.color} size="sm" />
               </span>
               <div className="min-w-0">
-                <div className="truncate text-sm font-medium leading-tight">{p.name}</div>
+                {editing === p.id ? (
+                  <input autoFocus defaultValue={p.name} onBlur={(e) => rename(p.id, e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") rename(p.id, e.currentTarget.value); if (e.key === "Escape") setEditing(null); }}
+                    className="w-full rounded border border-brand-400 px-1 text-sm font-medium outline-none" />
+                ) : (
+                  <button onClick={() => setEditing(p.id)} className="group/name flex max-w-full items-center gap-1 text-left" title="Rename speaker">
+                    <span className="truncate text-sm font-medium leading-tight">{p.name}</span>
+                    <Pencil className="size-3 shrink-0 text-zinc-400 opacity-0 group-hover/name:opacity-100" />
+                  </button>
+                )}
                 <div className="text-[11px] text-zinc-500">{Math.round(share * 100)}% · {clock(talk)} · {turns} turns</div>
               </div>
             </div>
