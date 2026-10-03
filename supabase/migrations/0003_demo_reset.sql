@@ -29,7 +29,7 @@ begin
     returning id into new_id;
 
     create temp table if not exists pmap (old uuid primary key, new uuid not null) on commit drop;
-    delete from pmap;
+    truncate pmap;
     insert into pmap select p.id, gen_random_uuid() from participants p where p.meeting_id = m.id;
 
     insert into participants (id, meeting_id, name, email, color, idx)
