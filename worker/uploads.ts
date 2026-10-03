@@ -11,7 +11,7 @@ uploads.use("*", requireUser);
 
 // 1. Create the meeting row and an R2 multipart upload.
 uploads.post("/", async (c) => {
-  const body = await c.req.json<{ title: string; contentType: string; size: number; source: "upload" | "browser"; durationMs?: number }>();
+  const body = await c.req.json<{ title: string; contentType: string; size: number; source: "upload" | "browser"; durationMs?: number; calendarEventId?: string | null }>();
   if (!body.title?.trim()) return c.json({ error: "Give the recording a title" }, 400);
   if (!/^(audio|video)\//.test(body.contentType)) return c.json({ error: "Only audio or video files" }, 400);
   if (body.size > MAX_UPLOAD_BYTES) return c.json({ error: "Recordings are limited to 300 MB in this demo" }, 400);
@@ -22,6 +22,7 @@ uploads.post("/", async (c) => {
       owner_id: c.get("userId"), title: body.title.trim().slice(0, 200), source: body.source,
       media_kind: body.contentType.startsWith("audio/") ? "audio" : "video",
       duration_ms: Math.round(body.durationMs ?? 0), status: "processing", stage: "uploading",
+      calendar_event_id: body.calendarEventId?.slice(0, 200) ?? null,
     })
     .select("id")
     .single();

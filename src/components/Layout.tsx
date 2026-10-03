@@ -2,6 +2,7 @@ import { NavLink, Outlet } from "react-router";
 import { CalendarDays, LogOut, Video } from "lucide-react";
 import clsx from "clsx";
 import { signOut, useAuth } from "../lib/auth";
+import { MeetingAlerts } from "../lib/alerts";
 
 const nav = [
   { to: "/", label: "Meetings", icon: Video, end: true },
@@ -61,6 +62,7 @@ export default function Layout() {
             </button>
           </nav>
         </header>
+        <MeetingAlerts />
         <Outlet />
       </main>
     </div>

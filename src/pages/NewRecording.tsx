@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { Bot, Circle, FileAudio, MonitorUp, Square, Upload } from "lucide-react";
 import clsx from "clsx";
 import { api } from "../lib/api";
 import { clock } from "../lib/format";
+import { setRecording } from "../lib/alerts";
 
 const CHUNK = 8 * 1024 * 1024;
 
 export default function NewRecording() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"upload" | "record">("upload");
-  const [title, setTitle] = useState(`Recording ${new Date().toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`);
+  const [params] = useSearchParams();
+  const calendarEventId = params.get("event");
+  const [mode, setMode] = useState<"upload" | "record">(params.get("mode") === "record" ? "record" : "upload");
+  const [title, setTitle] = useState(
+    params.get("title") ?? `Recording ${new Date().toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`,
+  );
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +26,7 @@ export default function NewRecording() {
       const contentType = blob.type || "video/webm";
       const { meetingId, uploadId } = await api<{ meetingId: string; uploadId: string }>("/uploads", {
         method: "POST",
-        body: JSON.stringify({ title, contentType, size: blob.size, source, durationMs }),
+        body: JSON.stringify({ title, contentType, size: blob.size, source, durationMs, calendarEventId }),
       });
       const parts: { partNumber: number; etag: string }[] = [];
       const total = Math.max(1, Math.ceil(blob.size / CHUNK));
@@ -80,7 +85,7 @@ export default function NewRecording() {
         ) : mode === "upload" ? (
           <FilePicker onFile={(file, durationMs) => upload(file, "upload", durationMs)} />
         ) : (
-          <TabRecorder onDone={(blob, durationMs) => upload(blob, "browser", durationMs)} />
+          <TabRecorder callOpened={params.get("opened") === "1"} onDone={(blob, durationMs) => upload(blob, "browser", durationMs)} />
         )}
       </div>
       {error && <p className="mt-4 text-sm text-rose-600">{error}</p>}
@@ -123,7 +128,7 @@ function FilePicker({ onFile }: { onFile: (f: File, durationMs?: number) => void
 }
 
 /** Records a browser tab (the call) plus your microphone, mixed into one track. */
-function TabRecorder({ onDone }: { onDone: (b: Blob, durationMs: number) => void }) {
+function TabRecorder({ onDone, callOpened }: { onDone: (b: Blob, durationMs: number) => void; callOpened?: boolean }) {
   const [state, setState] = useState<"idle" | "recording">("idle");
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -157,6 +162,7 @@ function TabRecorder({ onDone }: { onDone: (b: Blob, durationMs: number) => void
       const chunks: Blob[] = [];
       rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
       rec.onstop = () => {
+        setRecording(false);
         const durationMs = Date.now() - startedAt.current;
         [display, mic].forEach((s) => s?.getTracks().forEach((t) => t.stop()));
         ctx.close();
@@ -166,6 +172,7 @@ function TabRecorder({ onDone }: { onDone: (b: Blob, durationMs: number) => void
       display.getVideoTracks()[0].onended = () => rec.state === "recording" && rec.stop();
       stopAll.current = () => rec.state === "recording" && rec.stop();
       rec.start(1000);
+      setRecording(true);
       startedAt.current = Date.now();
       setElapsed(0);
       setState("recording");
@@ -180,7 +187,8 @@ function TabRecorder({ onDone }: { onDone: (b: Blob, durationMs: number) => void
       {state === "idle" ? (
         <>
           <p className="text-sm text-zinc-600">
-            Open your call in another tab, then choose it here with <b>Share tab audio</b> switched on. Your microphone is mixed in so both sides are captured.
+            {callOpened ? "Your call opened in a new tab. Click Start recording and choose that tab" : "Click Start recording and choose the tab your call is in"} with{" "}
+            <b>Share tab audio</b> switched on. Your microphone is mixed in so both sides are captured.
           </p>
           <button onClick={start} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700">
             <Circle className="size-3.5 fill-current" /> Start recording

@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
-import { Bot, CalendarDays, Loader2, Video } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import { Bell, BellRing, Bot, CalendarDays, CheckCircle2, Circle, Loader2, Video } from "lucide-react";
 import { api } from "../lib/api";
+import { getSupabase } from "../lib/supabase";
+import { demoSoonEvent, joinAndRecord, notificationPermission, notificationsSupported, notify, type CalendarEvent } from "../lib/alerts";
 import { AvatarStack } from "../components/Avatar";
 
-type Event = {
-  id: string; title: string; start: string; end: string;
-  attendees: { name: string; email: string }[];
-  conference: "meet" | "zoom" | "teams" | null; link: string | null; sample?: boolean;
-};
+type Event = CalendarEvent;
 type Res = { connected: boolean | "sample"; configured?: boolean; expired?: boolean; email?: string | null; events: Event[]; error?: string };
 
 const COLORS = ["#6366f1", "#0ea5e9", "#10b981", "#f59e0b", "#ef4444", "#a855f7", "#ec4899", "#14b8a6"];
@@ -17,6 +15,9 @@ const CONF = { meet: "Google Meet", zoom: "Zoom", teams: "Microsoft Teams" } as 
 export default function Upcoming() {
   const [params] = useSearchParams();
   const [data, setData] = useState<Res | null>(null);
+  const navigate = useNavigate();
+  const [recorded, setRecorded] = useState<Map<string, string>>(new Map());
+  const [permission, setPermission] = useState(notificationPermission());
   const [error, setError] = useState<string | null>(
     params.get("error") ? `Couldn't connect Google Calendar (${params.get("error")}). Please try again.` : null,
   );
@@ -24,11 +25,31 @@ export default function Upcoming() {
   const load = () =>
     api<Res>("/calendar/events")
       .then((r) => {
-        setData(r.connected === "sample" ? { ...r, events: sampleWeek() } : r);
+        const next = r.connected === "sample" ? { ...r, events: [demoSoonEvent(), ...sampleWeek()] } : r;
+        setData(next);
+        loadRecorded(next.events.map((e) => e.id));
         if (r.error) setError(`Couldn't read your calendar: ${r.error}`);
       })
       .catch((e) => setError(e.message));
   useEffect(() => { load(); }, []);
+
+  // Which events already have a recording (meetings.calendar_event_id).
+  async function loadRecorded(ids: string[]) {
+    if (!ids.length) return;
+    const sb = await getSupabase();
+    const { data } = await sb.from("meetings").select("id,calendar_event_id").in("calendar_event_id", ids);
+    setRecorded(new Map((data ?? []).map((m) => [m.calendar_event_id as string, m.id as string])));
+  }
+
+  async function enableAlerts() {
+    if (!notificationsSupported()) return setError("This browser doesn't support desktop notifications.");
+    setPermission(await Notification.requestPermission());
+  }
+
+  function testAlert() {
+    const e = data?.events[0];
+    notify(e ? `Starts in 5 min: ${e.title}` : "Meeting alerts are on", e ? "Click to join and start recording." : "You'll be reminded before meetings.", e ? () => joinAndRecord(e, navigate) : undefined);
+  }
 
   async function connect() {
     try {
@@ -62,6 +83,25 @@ export default function Upcoming() {
           </span>
         )}
       </div>
+
+      {data && data.connected !== false && (
+        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm shadow-sm">
+          {permission === "granted" ? <BellRing className="size-4 text-emerald-600" /> : <Bell className="size-4 text-zinc-500" />}
+          <span className="min-w-0 flex-1 text-zinc-700">
+            {permission === "granted"
+              ? "Meeting alerts are on: 5 minutes before, and again if a meeting starts while you're not recording."
+              : permission === "denied"
+                ? "Desktop notifications are blocked for this site. You'll still see banners in the app; allow notifications in your browser's site settings for pop-ups."
+                : "Get a reminder 5 minutes before each meeting, and a nudge if it starts while you're not recording."}
+            <span className="block text-xs text-zinc-500">Alerts work while Fathom Clone is open in a tab.</span>
+          </span>
+          {permission === "granted" ? (
+            <button onClick={testAlert} className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50">Send a test alert</button>
+          ) : permission !== "denied" ? (
+            <button onClick={enableAlerts} className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800">Turn on alerts</button>
+          ) : null}
+        </div>
+      )}
 
       {error && <p className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
 
@@ -108,7 +148,19 @@ export default function Upcoming() {
                           {e.attendees.length > 0 && <> · {e.attendees.length + 1} people</>}
                         </div>
                       </div>
-                      <AvatarStack people={e.attendees.map((a, i) => ({ name: a.name, color: COLORS[i % COLORS.length] }))} max={4} />
+                      <span className="hidden sm:block">
+                        <AvatarStack people={e.attendees.map((a, i) => ({ name: a.name, color: COLORS[i % COLORS.length] }))} max={4} />
+                      </span>
+                      {recorded.has(e.id) ? (
+                        <Link to={`/meetings/${recorded.get(e.id)}`} className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-50">
+                          <CheckCircle2 className="size-3.5" /> Recorded
+                        </Link>
+                      ) : (
+                        <button onClick={() => joinAndRecord(e, navigate)} title={e.link ? "Open the call and start recording" : "Start recording"}
+                          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-200 px-2.5 py-1.5 text-xs font-medium text-zinc-700 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700">
+                          <Circle className="size-2.5 fill-rose-500 text-rose-500" /> {e.link ? "Join & record" : "Record"}
+                        </button>
+                      )}
                     </li>
                   ))}
                 </ul>
