@@ -1,0 +1,76 @@
+Priya: Yes. Let me start with the bad news, since I'd rather say it than have you find it out. Offline mode was due on October 15th. It's going to slip. We are not going to hit that date.
+Jordan: Okay. Thanks for saying it up front. How far are we talking?
+Priya: I'll get to that, but first I want to explain why, because it isn't a case of people being slow. We've built most of it. Local storage works, the sync queue works, and the photo capture works. The problem is conflict resolution.
+Moira: Sorry, can you say what you mean by a conflict, in plain terms? I want to make sure I'm picturing the right scenario.
+Priya: Sure. Picture a technician in a basement. No signal. They've got a job open on their phone, and they update it. They add a note, change the status, maybe swap a part. Meanwhile, upstairs in the office, a dispatcher edits the same job. They change the time window, or reassign it, or fix the address. Then the technician walks out of the basement, the phone reconnects, and now we've got two different versions of the same job.
+Rishi: And the question is which one wins.
+Priya: Exactly. And it's not as simple as "last write wins," because that would silently throw away somebody's work. If the dispatcher changed the address and the tech changed the status, you'd want both. But if they both changed the status, you can't have both. And we found a lot of edge cases in between.
+Rishi: How many edge cases, roughly?
+Priya: We catalogued thirty-one, and we've only fully solved nineteen. The remaining twelve are the awkward ones, mostly around reassignment and cancelled jobs.
+Daniel: Cancelled jobs. So the tech drives to a house, does the work in a basement with no signal, and the dispatcher cancelled it an hour earlier.
+Priya: That's one of the twelve, yes.
+Daniel: I'd call that a character-building scenario for everybody involved.
+Priya: Let me lay out the two options we have. Option A is to wait until the conflict handling is properly done and ship full offline editing. Our best estimate for that is November 12th. Option B is to split it. We ship read-only offline first. That means technicians can see job details, customer history and photos offline, and they can capture photos that queue up for upload when they have signal. But they can't edit the job itself while offline. We could get that out on October 27th, to a beta group.
+Jordan: So the difference is about two weeks, and the cost is that editing doesn't arrive until later.
+Priya: Right. Option B actually means we ship something earlier, but the full thing no later than option A would have. The full editing would still target November 12th in that case, because the work on the conflicts continues in parallel.
+Daniel: Does it, though? Honestly. Because in my experience, "we'll carry on in parallel" is how teams end up building two things half as well.
+Priya: That's a fair challenge. I've thought about it. The read-only work is a small slice, and it's mostly the people who aren't on the conflict logic. Wei and Sofia are on the read-only path. The sync work stays with the two engineers who were already doing it.
+Daniel: All right. That's reassuring, provided it stays true. My concern is that a beta needs a lot of testing, and our QA team is already stretched. Ben has been running the regression suite more or less alone.
+Priya: Understood. That's a real constraint.
+Daniel: Offline is also a category of bug that's miserable to test. You need real devices, a way of killing the network, odd operating system versions, low storage. If we get that wrong, we'll find the bugs in a customer's basement, and I'd rather not.
+Priya: No, agreed.
+Moira: Can I come in on the experience side? Because the thing I keep coming back to is the tech. Say the tech makes an edit offline and it loses a conflict. What do they see? Because right now, as far as I know, the answer is nothing.
+Priya: Right now, they'd see the job quietly update to the server version.
+Moira: Which is awful. They did some work, and then it disappears. So what does the tech actually see, in the moment? Is there a message? Do they get to see their version? Can they re-apply it? I don't want somebody finding out three days later that their notes were overwritten.
+Priya: I agree. That's the part we haven't designed, and it's one reason the full version is late. We've built the logic for resolving conflicts, but not what the tech sees when it happens.
+Moira: That's the bit that matters most, though. The logic is invisible. The screen is the product.
+Rishi: With respect, the logic is the thing that decides whether the screen is even possible. If we can't tell which fields changed, you've got nothing to show.
+Moira: Sure, but I'm asking what the tech sees, and the answer can't be a diff view with field names. They're on a ladder.
+Rishi: I'm not suggesting a diff view. I'm saying we can give you field level information. You can design from that.
+Moira: Then that's what I need. Field level, with timestamps and who made the change.
+Rishi: We can provide all three.
+Priya: Good. So Moira, would you be able to design the conflict screens? Even rough ones, so the engineers know what they're building toward?
+Moira: Yes, I can do that. What date do you need them by?
+Priya: Ideally before the end of next week. If the designs are done early, the engineering side gets a lot easier.
+Moira: Let's say October 9th. That's a Friday, and I'll have conflict resolution designs ready by then. Including the case where the tech's edit loses.
+Priya: Perfect. October 9th. Thank you.
+Jordan: Karen, I haven't heard from you yet, and I think this is where you'd have an opinion. What do customers actually need from offline mode?
+Karen: Honestly, I think they mostly need to see the job. When customers ask me about offline, they say "the tech is in a basement, or a crawl space, or a new build with no signal, and he can't see the address or the customer notes or what was done last time." That's the pain. Almost nobody says "I need to edit the job while I'm in the basement." They can do the editing when they're back in the van.
+Priya: That matches what we heard in the interviews, to be fair.
+Karen: And the photos matter a lot. Techs take photos of the unit, the model plate, the damage. If those get lost because the signal dropped, it's a real problem for warranty claims. So if read-only offline lets them see the job and capture photos that upload later, I think that solves most of what I hear.
+Jordan: So you'd be comfortable with option B.
+Karen: I'd be more than comfortable. I think it's better for customers. But I do want to be careful about who we put in the beta. We should pick customers who can handle something unfinished, and who'll give us real feedback.
+Priya: Agreed. I'd want people who actually work in places with bad signal.
+Karen: I've got a few existing accounts in my head already.
+Jordan: How many customers are we thinking about for the beta?
+Priya: I was thinking twenty. It's enough to catch the strange cases, but not so many that we can't support them properly.
+Karen: Twenty is good. I could probably find twenty if I knew what to look for.
+Priya: Then I'll write the criteria. Things like region, device mix, whether their techs regularly work somewhere with poor reception. Karen, I'll send you the beta customer criteria by Friday, which is October 2nd.
+Karen: Friday the second. Great, I'll start pulling a list as soon as I get it.
+Daniel: Coming back to my earlier point, because I don't want it to be lost. If we ship this to twenty customers, I want it behind a feature flag, and I want a kill switch. If something goes badly wrong in a basement in Cleveland, I need to be able to turn offline off without waiting for an app store release.
+Priya: Yes, that's already in the plan. It would sit behind a flag, and we'd control it per customer from the server.
+Daniel: Per customer, and ideally globally as well. One button.
+Priya: I can do both. I'll make sure the global switch is there.
+Daniel: Thank you. And on QA, I'd like a proper plan. A device lab, the right mix of phones, a way of simulating bad networks. I'll take responsibility for that. I'll make sure QA has a device lab plan for offline before the beta starts on the 27th.
+Jordan: Daniel, do you want to give that a date, so that it's in the notes?
+Daniel: Fair. Let's say the plan is agreed with Ben and Priya by the end of next week. And the devices in place before the beta, so before October 27th.
+Priya: We've already got most of what Ben needs. He's short on a few older Android phones, but I'll look at that separately.
+Daniel: Good. Send me the list when you've got it.
+Rishi: One practical question. If it's read-only, what happens when the data changes while the tech is offline? Say the dispatcher updates the job after the tech has already downloaded it.
+Priya: The tech will see the version they last synced, and we'll show a banner saying the job was last updated at a certain time. When they reconnect, it refreshes. They can't edit it, so there's no conflict to resolve.
+Rishi: That's neat, actually. Read-only avoids the entire problem.
+Priya: That's exactly why it's the safer first step.
+Jordan: All right, let me see where we are. I'm hearing that option B has support from Karen, with conditions from Daniel, and Moira's happy as long as the conflict designs are coming. Priya, are you comfortable with it from the engineering side?
+Priya: I am. I'd rather ship something useful and solid than a full feature that's shaky. And honestly, I'd rather own the slip clearly than hide it. Option B it is.
+Jordan: Anyone against? Daniel, you sounded cautious.
+Daniel: Cautious, not against. I'm fine as long as the flag and the QA plan are real.
+Jordan: Okay. So let me state the decision, and correct me if I've got it wrong. We ship read-only offline mode to a beta of twenty customers on October 27th. Full offline editing is targeted for November 12th. All of it sits behind a feature flag with a kill switch.
+Priya: That's right.
+Moira: Yes.
+Daniel: Agreed.
+Jordan: And the actions are these. Priya sends Karen the beta customer criteria by Friday, October 2nd. Moira delivers the conflict resolution designs by October 9th. And Daniel makes sure QA has a device lab plan for offline in place before the beta.
+Moira: Confirmed.
+Daniel: Yes. Noted.
+Priya: And I'll send the criteria this week, so you'll have it well before Friday if I can manage it.
+Karen: Even better.
+Jordan: Great. Thank you, Priya, and thanks for being so straightforward about it. Okay, Aman, you're up.

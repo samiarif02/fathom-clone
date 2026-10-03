@@ -1,36 +1,24 @@
 Jordan: Morning, everyone. Can people hear me okay?
 Daniel: Loud and clear. Good morning, Jordan.
-Priya: Morning. I can hear you, but I think Rishi is on mute.
-Rishi: I'm not on mute. I've been talking for about ten seconds. Is this working now?
-Priya: There he is.
+Priya: Morning. I think Rishi is on mute, though.
+Rishi: I'm not on mute. I've been talking for ten seconds. Is this working now?
 Rishi: Right, apparently the laptop picked the wrong microphone again. Sorry. Morning, all.
 Moira: Morning. Is anyone else running on a single coffee today? Because I'm running on a single coffee and a lot of optimism.
 Daniel: It's Tuesday, Moira. Optimism is traditionally rationed until Thursday.
-Moira: Noted.
 Tessa: Morning, everyone. Jordan, are you recording this? I want to make sure my screen share ends up in the notes.
 Jordan: Yes, the recorder's running, so we'll get a transcript and a summary afterwards. Which is good news for all of us, because I'm going to ask people to say owners and dates out loud today.
 Aman: Hi, good morning! Sorry, I'm in a bit early. I've got the pricing deck open already, so whenever you need it, I'm ready.
 Daniel: Of course he's got the deck open. It's ten o'clock and the deck has been open since Sunday, I'd wager.
-Aman: Saturday night, actually. But I did go out on Sunday. I had a very nice walk.
-Tessa: Good for you, Aman.
 Jordan: Did anyone do anything fun this weekend? Give it a minute while people trickle in.
 Priya: Not really. I spent most of Saturday at my daughter's football match. It was freezing, and the other team's parents were way too competitive.
-Moira: Oh, the parents are always worse than the kids.
-Priya: Always. One of them was shouting tactical instructions at a seven year old.
-Rishi: I finally fixed the garage door. Three hours, one trip to the hardware shop, and in the end it was a loose wire.
-Daniel: That's the most Rishi story I've ever heard. Three hours, a precise diagnosis, and a loose wire.
-Rishi: It was a very precisely loose wire.
 Jordan: Okay. Is everyone here who should be? I'm looking at the invite. We're waiting on Karen.
 Tessa: She messaged me about ten minutes ago. A customer call ran long, so she said to start without her.
 Jordan: Okay, we'll give it another minute, and then I'll start with the agenda anyway, since she'll catch up.
 Daniel: While we wait, can I ask whether this is an hour or an hour and a quarter? I've got a hard stop at eleven for a vendor call.
 Jordan: An hour. Sharp. Which is exactly why I'm going to be strict about it today.
-Daniel: Lovely. I'll hold you to that.
 Karen: Hi, hi, sorry, sorry. I'm here. Can you hear me?
 Jordan: We can hear you, Karen. Welcome.
 Karen: I'm so sorry I'm late. A customer call ran over, and I couldn't exactly hang up on a man who was halfway through telling me about his van.
-Moira: Was it a good van?
-Karen: It was an excellent van. It was also the reason his technicians keep missing the first job of the day, so I think we're going to hear more about that vehicle.
 Jordan: Okay, no problem, you haven't missed anything. Right, let's get going, because we've got a lot to get through and only an hour to do it.
 Jordan: Here's the plan. This is the Q4 planning meeting for product and engineering. We've got seven topics, and I'll go through them in order so everyone knows where we are.
 Jordan: First, Q3 by the numbers. Tessa will walk us through where we ended the quarter, and about nine minutes is plenty for that.
@@ -46,16 +34,9 @@ Daniel: Quick question. Will the recap be a proper recap, with names and dates, 
 Jordan: Names and dates. I'll go through every decision and who owns what, so if you hear your name at the end and don't remember agreeing to it, that's your cue to speak up now rather than then.
 Daniel: Fair warning, then.
 Jordan: And that's what I'd like from everyone today. If you're taking an action, say it out loud, with a date. Then it'll be captured properly in the notes, and nobody has to chase anybody afterwards.
-Moira: That would be a first.
-Jordan: It would, so let's try it.
 Jordan: A quick word on the themes, so we have the frame for everything we're about to discuss. As I see it, Q4 has four big themes. One, ship offline mode. Two, launch the new pricing. Three, bring our infrastructure cost down. And four, be enterprise ready.
 Jordan: If a discussion today doesn't connect to one of those four, I'll probably ask you to take it offline. And I mean that kindly.
-Rishi: Which of the four does the garage door count under?
-Jordan: None of them, Rishi. Park it.
-Rishi: Understood.
 Jordan: And finally, please keep it tight. Questions are great, and disagreement is great, because that's why we're all in the room. But if we start going around in circles, I'm going to step in and either make a call or park it with an owner and a date.
-Karen: That sounds sensible. I'll try to be brief, but no promises on the Acme part.
-Jordan: Noted. All right, I think that's everything. Tessa, are you ready to share your screen?
 Tessa: I am. Give me a second to find the right window. There we go. Can everyone see the first slide?
 Priya: Yep, I can see it.
 Jordan: Perfect. Over to you, Tessa.

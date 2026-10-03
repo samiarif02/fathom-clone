@@ -12,3 +12,4 @@ dist/
 .claude/settings.local.json
 .claude/hooks/capture-errors.log
 *.tmp
+scripts/seed/out/

@@ -1,0 +1,60 @@
+Priya: Morning, everyone. Let's get going, we've got about five minutes. Wei, can you hear us? You were muted a second ago.
+Wei: Yep, I'm here. Sorry, my headphones decided to switch to my laptop speaker.
+Priya: No worries. Sofia, Ben, you're both here. Jordan's listening in today, so say hi, Jordan.
+Jordan: Hi all. Just a fly on the wall. Ignore me.
+Sofia: Hi Jordan. We'll try to be impressive.
+Ben: Low bar for me. I haven't finished my coffee.
+Priya: Okay. Quick reminder of the goal. Read-only offline mode goes to the beta on October 27th, so we've got about three and a half weeks. Same format as always, yesterday, today, blockers. Wei, you first.
+Wei: Sure. Yesterday I finished the SQLite schema migration for the job cache. That's the one that adds the tables for job details and customer history. It's merged to the offline branch, and it runs clean on a fresh install. I also started on the upgrade path from the current app version, so existing users don't lose their local data.
+Priya: Nice. Did the upgrade path work?
+Wei: Mostly. And that leads me to something I found. On iOS 17, if the cache is cold, meaning the app has just been installed or the user cleared the data and opens a job with no signal, the app crashes. It looks like the job detail screen is reading from the cache before the migration has finished.
+Priya: Is that a race condition?
+Wei: I think so. The view loads, the migration is still running on a background queue, and the view tries to read a table that doesn't exist yet. It only happens on iOS 17, I couldn't reproduce it on 16.
+Priya: Okay, how bad is it?
+Wei: It's a hard crash, but only in that cold-cache case, so it's not going to hit most users. But we'd hit it in the beta, because people will be testing offline from a fresh install.
+Priya: So we need to fix it before the twenty-seventh. Can you do that today?
+Wei: Today, I'd say. I'll gate the screen on a migration-complete flag and show a loading state until it's ready. Probably an hour or two, plus testing.
+Priya: Great. Moira's team might want to see what that loading state looks like, though, so give them a heads up.
+Wei: Will do. I'll ping Moira's team for the loading state design.
+Priya: Thanks. Anything else, Wei?
+Wei: No blockers apart from that. Today, the crash fix, and then I'm going to start on the offline banner at the top of the screen, the one that tells the tech they're offline.
+Priya: Perfect. Sofia?
+Sofia: Hi. Yesterday I finished the photo upload queue on Android. When a tech takes a photo with no signal, it's saved locally and put in a queue, and it uploads automatically when the connection comes back. I tested it by putting the phone in airplane mode and taking five photos, and they all uploaded after I turned it off.
+Priya: That's great. What about the retries?
+Sofia: Exponential backoff, up to six tries, and then it flags the photo as failed so the tech can retry it by hand. I'm not sure about that last part. Right now it just shows a little red icon, and I don't think it's clear enough.
+Priya: Yeah, that's a design question. Let's grab Moira on that too. What about large files?
+Sofia: Good question. Photos are compressed to about two megabytes before queueing. I tried a ten photo job and it was fine. But the one thing I haven't tested is what happens if the app gets killed in the middle of an upload.
+Priya: That feels important. Can you test that today?
+Sofia: Yes, that's my plan today. I'll force quit mid-upload and make sure it resumes and doesn't create duplicates. And after that I'll port Wei's schema migration to the Android Room database.
+Priya: Right, so the two platforms stay in sync.
+Sofia: Exactly. The migration is the bigger piece. I'd say I get it done by Monday.
+Priya: Monday is fine. Any blockers?
+Sofia: Not for me, but Ben might have one.
+Ben: Yes, I do. That's my cue. Okay, so yesterday I wrote the test plan for offline mode. It covers about forty scenarios. Airplane mode, flaky connections, the app being killed, switching between wifi and cell, all of that. I ran the first ten on the two iPhones we have and they're fine, Wei's crash aside.
+Priya: Good. What's the blocker?
+Ben: The device lab. For Android, I only have two recent phones, a Pixel and a Samsung. But a lot of our customers use older and cheaper devices. I looked at the usage data and a big chunk of technicians are on Android 10, 11 and 12 on budget phones. I can't sign off on offline mode without testing on those.
+Priya: What do you need exactly?
+Ben: Three older Android devices. I'd like a Samsung Galaxy A12, an older Moto G, and a Pixel 4a if we can find one. They're all cheap, maybe a hundred and fifty dollars each, so under five hundred dollars in total.
+Priya: That's easy. I'll order them today. I'll put it on the team card and have them shipped to the office. Do you want them expedited?
+Ben: If we can, yes. If they arrive by next Wednesday I'm fine. Any later and I'm squeezed against the beta date.
+Priya: Okay, I'll order them today and I'll pay for expedited shipping so they land by Wednesday, October 7th.
+Ben: Perfect, thank you. And Jordan, sorry, this is related to something Daniel raised in the planning meeting about a device lab plan.
+Jordan: Yes, that's the plan Daniel owes me. This sounds like the start of it. Ben, can you write down the list of devices you want in the lab, and send it to Daniel so he can close it out?
+Ben: Sure. I'll send Daniel the device list this afternoon.
+Jordan: Great, thank you.
+Priya: Okay, anything else, Ben? What are you doing today?
+Ben: Today I'm running the next ten scenarios on iOS, and writing up the test cases for the photo queue so Sofia's work is covered. Once the devices arrive, I'll run everything on Android.
+Priya: And Wei's crash, can you add that as a regression test?
+Ben: Already did. It's the first one on the list now.
+Priya: Love it. Okay, my turn, very quickly. I spent yesterday on the feature flag and the beta list. The flag is set up so we can switch offline mode off remotely, which Daniel asked for as a kill switch. I'm working with Karen on the beta customer criteria. She's got a first list of twenty customers.
+Wei: Is there a rule about who's included?
+Priya: A few. Customers who actually work in places with bad signal, a mix of sizes, and people who are willing to give us feedback. I sent the criteria to Karen yesterday, in fact, so that one's done.
+Priya: Today I'm going to review Sofia's pull request and then I've got a call with Moira about the conflict screens, which are due on October 9th.
+Priya: My one blocker is this device order, so that's today. Anything else from anyone? Jordan, anything from your side?
+Jordan: Just that I'm really pleased with the pace. We were a little worried two weeks ago and this looks solid. Keep an eye on that cold-cache crash, though. I don't want the beta customers to be the ones who find the bugs.
+Wei: Understood. It'll be fixed by end of day.
+Priya: Okay, to recap. Wei fixes the iOS 17 cold-cache crash today and talks to Moira's team about the loading state. Sofia tests the killed-app upload case today and finishes the Android migration by Monday. Ben sends Daniel the device list this afternoon, and I order three Android devices today for Wednesday delivery. Good?
+Ben: Good.
+Sofia: Good.
+Wei: All good.
+Priya: Thanks, all. Have a great day.

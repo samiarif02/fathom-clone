@@ -1,0 +1,59 @@
+Karen: Hi Greg, hi Helen, can you both hear me okay?
+Greg: Loud and clear, Karen. Morning. Well, almost afternoon on the east coast, but morning to you folks.
+Karen: Thanks for making the time, I know your Friday is full. I've got Jordan Lee, our VP of Product, and Rishi Kapoor from our platform team with me. Rishi's the one who's been digging into the performance issue.
+Jordan: Hi Greg, hi Helen. Good to talk. I think we've only met once, Greg, at the customer summit.
+Greg: I remember. You had the bad coffee.
+Jordan: That was the venue's fault, I want that on record.
+Helen: Hi everyone. Helen Park, I run IT here at Acme. I'm mostly here for the SSO part.
+Karen: Great. Let me say what I'd like to get out of the next ten minutes. First, Greg, I'd like to hear from you how this has been affecting your teams. Second, Rishi will explain what we found and what we're going to do about it. Then Helen has questions on SSO. And at the end, we agree on how we keep you informed. Does that work?
+Greg: Works for me. And I'll start, since I'm the one who's been on the phone with unhappy dispatchers. I'll be direct, Karen, you know I'll be direct.
+Karen: Please.
+Greg: We've been a customer for four years. Four hundred technicians. The product has been good to us. But since about August, the dispatch board has been getting slower every week, and at seven in the morning, when everybody logs in and the jobs get assigned, it's painful. My dispatchers sit there staring at a spinner. Last Tuesday it took almost five seconds to load the board, and one of them told me she'd started assigning jobs on a paper list while she waited.
+Karen: Five seconds, that matches what Rishi measured.
+Greg: And that's the busiest hour of the day. The morning is when we lose money. If the techs are late rolling out, the entire day slips. I'm not angry, I just need it fixed. And I'll be honest, this is coming up for renewal, and it's going to be a factor.
+Karen: I understand, and we're not going to talk around that. Rishi, can you walk Greg through what you found?
+Rishi: Yes, thanks. Hi Greg. So, I measured the board load at peak, between seven and eight in the morning. The p95 is 4.8 seconds. That means one in twenty loads takes longer than 4.8 seconds, and the median is faster, but the slow ones are what your dispatchers feel the most.
+Greg: Right, so the worst-case experience, which is what people remember.
+Rishi: Exactly. There are two causes. The first is what we call an N+1 query. When the board loads, for each job it makes a separate database call to look up the assignment. With four hundred technicians and a few thousand jobs on the board, that's thousands of tiny queries instead of one. The second cause is that we don't cache anything on that screen, so every refresh repeats all that work.
+Greg: Why did it get worse over the summer?
+Rishi: Your job volume grew. Your numbers are up about thirty percent from last year, and the problem scales with volume. Honestly, it should have been caught earlier on our side.
+Greg: I appreciate you saying that.
+Rishi: The fix is to collapse those thousands of queries into a handful, and to add caching for the board data, with proper invalidation so a dispatcher never sees stale assignments. We've already got a prototype in staging, and on a copy of your data, the p95 is under two seconds. We think we can do better with the caching.
+Greg: And when does it ship?
+Rishi: October 23rd. That's three weeks from now. And the target is a p95 under 1.5 seconds at peak. I'm the owner of this, so you'll get a direct answer from me if there's an issue.
+Greg: October 23rd, under one and a half seconds. Okay. And what if it slips?
+Rishi: I'll tell Karen as soon as I know, not on the date. But I'm confident, we've already cleared the hard part.
+Jordan: Greg, I'll add that this is the top priority for engineering. We moved other projects out of the quarter, the customer portal is now in Q1, specifically to free up the capacity for this and for your SSO.
+Greg: That tells me more than anything else you've said. Thank you, Jordan.
+Karen: Greg, can I suggest we measure it together? After the fix ships, we'll look at the same seven to eight window and send you the actual numbers.
+Greg: Yes, I'd like that. I'd rather have numbers than promises.
+Karen: Agreed. Helen, over to you for SSO.
+Helen: Thanks. So, as Greg said, SSO is a hard requirement for our renewal. Our security policy says every vendor with access to customer or employee data has to authenticate through our identity provider. We use Okta. Right now our dispatchers have separate Fieldnote passwords, and that's been flagged in our last audit.
+Jordan: Understood. We're building SAML single sign-on, and we've committed to delivering it by December 15th. That's ahead of your renewal date of January 31st, so there's time to test it properly before you commit.
+Helen: December 15th. That gives me about six weeks to roll it out. That's tight but workable. Will it work with Okta specifically?
+Rishi: Yes, Okta is the most common provider we'll test against. It's standard SAML 2.0, so you'd create an app integration in Okta, we give you our metadata, and you give us yours.
+Helen: Good. And what about SCIM? We provision and deprovision users automatically from Okta. If someone leaves the company, their access is removed from everything within a day.
+Jordan: That's an important question, and I want to be honest. SCIM is not in scope for the December release. SAML sign-in is. SCIM, the automatic provisioning, is something we'd look at in Q1, but I can't promise a date today.
+Helen: Okay. So in the meantime, how would we remove someone?
+Jordan: Manually in Fieldnote, an admin would deactivate the user. But with SAML on, if you remove them in Okta, they can't sign in anymore, so access is effectively cut off. The account would still exist in Fieldnote, but nobody could use it.
+Helen: That's acceptable for the interim, as long as there's a plan for SCIM. Can I get a commitment that it's on the Q1 roadmap?
+Jordan: I can commit to evaluating it first thing in Q1 and giving you a date by the end of January. I'd rather tell you that than overpromise.
+Helen: I appreciate the honesty. That's better than a date I can't trust.
+Karen: Helen, what do you need from us to get ready?
+Helen: I need your service provider metadata and some test time. And on my side, you'll need ours. I'll send over our Okta metadata so your team can configure and test with it.
+Rishi: That would be great. If you send it soon, we can validate the setup with a test tenant well before December.
+Helen: I can send it by next Friday, October 9th.
+Rishi: Perfect. Thank you.
+Karen: Okay, Greg, the last thing is communication. You shouldn't have to chase us. I'd like to propose that I send you a status email every Friday, covering the performance work, where SSO is, and anything at risk. Short and honest. Would that work?
+Greg: Every Friday is great. Include Helen, please. And be direct. If something's slipping, I'd like to hear it.
+Karen: Absolutely, you'll get it from me, starting today. I'll copy both of you and Jordan.
+Greg: Good. And then the renewal. January 31st. I don't want to leave that to the last week.
+Karen: Agreed. How about we plan a renewal conversation in early January, once you've had the performance fix for two months and SSO live for a few weeks? I'll set that up before the holidays so it's on the calendar.
+Greg: Early January works. By then I'll know whether my dispatchers are happy, and I'll tell you straight.
+Karen: That's all I'm asking.
+Greg: Okay. I'll say this. I came into this call ready to be difficult. I'm leaving it feeling like you've understood the problem. Let's see if October 23rd delivers.
+Jordan: We'll earn it, Greg. Thank you for being direct with us.
+Karen: Let me recap. Rishi delivers the performance fix by October 23rd with a p95 under 1.5 seconds, and we'll share the measured numbers afterwards. SAML SSO ships by December 15th, SCIM is a Q1 conversation, and Jordan will give Helen a date by the end of January. Helen sends the Okta metadata by Friday, October 9th. I send a status email every Friday, and we meet on renewal in early January. Anything I missed?
+Helen: No, that covers it.
+Greg: That's it. Thanks, everyone.
+Karen: Thank you both. Have a great weekend.

@@ -1,0 +1,69 @@
+Moira: Hi Nadia, can you hear us okay?
+Nadia: Hi, yes, I can hear you both, and I can see you. Thanks for having me.
+Moira: Wonderful. I'm Moira Byrne, I run design here at Fieldnote. We spoke briefly on the phone last week.
+Nadia: Yes, hi Moira, good to see you properly.
+Jordan: And I'm Jordan Lee, I'm the VP of Product. I'll mostly be asking about how design and product work together, but I'll chime in on everything.
+Nadia: Nice to meet you, Jordan. I've been reading about Fieldnote this week, so I'm excited to be here.
+Moira: Great. Quick plan for the next ten minutes or so. Nadia, you'll walk us through one project from your portfolio, then we'll have a couple of questions, and you'll have time to ask us anything. Sound okay?
+Nadia: That sounds perfect. Should I share my screen?
+Moira: Please do.
+Nadia: Okay, you should see it now. So, this is the project I'm proudest of. I was the lead designer on a redesign of a driver app at a logistics company called Routewise. About four thousand drivers, delivering parcels in the last mile, so a lot like your technicians, they're out in the field, in vehicles, often with bad signal, using the app with one hand.
+Jordan: That's very close to our world.
+Nadia: Yes, that's partly why I applied. So, the problem. The old app assumed a connection. If the driver lost signal in a parking garage, the app froze, and drivers would just reload it, lose their place, and end up scanning packages twice. When I started, we sat in the vans with drivers for three days, and the thing that struck me was that they didn't trust the app. They wrote delivery notes on their hands.
+Moira: Their hands?
+Nadia: Literally, in pen. So the design goal became, the app should never make the driver wonder whether their work was saved.
+Moira: I like that framing.
+Nadia: Thanks. So the redesign was offline-first. Every action is saved on the device immediately, and we show the sync state in a really quiet way. A little status chip on each task, saved, waiting, synced. No modal dialogs, no error messages when they're in a tunnel. The queue just builds quietly and clears when they have signal.
+Jordan: How did you decide how much to show about the sync state? That's a tricky balance.
+Nadia: It was. First version showed too much. A global banner saying offline, which made drivers panic. In testing, they'd stop working. So we moved to per-task status, and a banner only if something needed their attention, like a photo that had failed for more than an hour.
+Moira: And what happened to the metrics?
+Nadia: So, we measured the time per task, from arriving at the stop to marking it complete. It dropped by twenty-two percent across the pilot group. Duplicate scans fell by about forty percent, and support tickets about lost work were cut in half over two quarters.
+Moira: Twenty-two percent is great. How did you measure it? Was it a controlled test?
+Nadia: A staged rollout. Two regions got the new app, two stayed on the old one, for six weeks. It wasn't perfect, because the regions weren't identical, but the data engineer and I normalised for route density.
+Moira: That's careful. Okay. I do have a more hands-on question when you're ready.
+Nadia: Sure.
+Moira: This is directly relevant to something we're working on right now. Imagine a technician is in a basement with no signal. They edit a job, say they change the status and add a note. Meanwhile, a dispatcher in the office edits the same job and changes the time. The tech comes back online. Both edits conflict. Walk me through what the tech sees.
+Nadia: Oh, that's a great one. Can I think out loud for a second?
+Moira: Of course. That's what I want.
+Nadia: Okay. First, I'd ask what actually conflicts. If the tech changed the status and the dispatcher changed the time, those aren't in conflict, they're different fields, and they should just merge silently. The tech shouldn't see anything.
+Moira: Right. And if they're the same field?
+Nadia: Then it depends on whose edit matters more. For a status like "completed," I'd say the tech's edit should usually win, because they were standing there. For the schedule time, the dispatcher should usually win. So I'd want a rule per field, rather than one rule for everything.
+Moira: Okay. And when the tech's edit loses?
+Nadia: I'd tell them, but I would not interrupt them. They might be in the middle of the next job. So a small notice on that job, something like, "The office updated this job's time while you were offline. Your note was saved. Tap to review." And I'd keep their original edit available for a bit, so they can see exactly what was lost and, if they feel strongly, send a message to dispatch.
+Moira: What about the dispatcher? Do they see anything?
+Nadia: I think so. If the tech's change overwrote theirs, they should see it on the board, otherwise you've created a trust issue on the other side. Maybe a subtle marker on the job.
+Moira: I like that you went to the dispatcher's side. Many people forget that. Jordan, anything on this?
+Jordan: Just one follow-up. Nadia, you said you'd rely on per-field rules. How would you validate those with real technicians, since we can't just guess?
+Nadia: I'd put cards on a table. Real scenarios, printed, and ask techs and dispatchers who should win in each one. You get patterns pretty fast. In the logistics project, we did that with twelve drivers and found one rule everyone agreed on that I would have gotten wrong.
+Jordan: What was it?
+Nadia: I assumed the dispatcher always wins on address changes. The drivers said no, if they're already at the house, they win, because the customer told them in person.
+Jordan: That's a nice example.
+Moira: Okay, thank you, that was exactly the kind of thinking I wanted. Jordan, do you want to take over?
+Jordan: Sure. Nadia, I want to ask about working with product managers, especially under pressure. You'll be partnering with PMs on tight timelines here. Tell me about a time when the deadline and the quality of the design were in tension.
+Nadia: Yes. On the Routewise project, about two months before launch, the business moved the date up by three weeks because of a big customer commitment. The PM and I had a rough conversation. I wanted to protect the offline sync states, and he wanted to cut them because they were the hardest to build.
+Jordan: What did you do?
+Nadia: I tried to avoid arguing about design and instead arguing about risk. I showed him the research clip of a driver writing on his hand. I said, if we ship without the sync status, this is what we'll see in the field. Then I offered a smaller version, just the per-task chip with two states instead of three, and a banner only for failures. We cut the scope, but not the idea.
+Jordan: And how did the PM react?
+Nadia: Relieved, I think. He wasn't against design, he was scared of the date. So I tried to give him a version he could say yes to.
+Jordan: That's a good answer. Did it work?
+Nadia: It shipped on the new date. We added the third state in the next sprint.
+Jordan: I like that you came with an option. A lot of designers just say no.
+Nadia: I've learned that no is rarely useful, but "here's what we can do" usually is.
+Jordan: Last one from me. What's something a PM has done that made you do your best work?
+Nadia: Honestly, when they bring me the customer problem and not the solution. If I'm handed a spec with wireframes already drawn, I'm just executing. If I'm handed "drivers lose their place when the signal drops," I'm designing.
+Jordan: That's very helpful to hear. Moira, back to you for any wrap up?
+Moira: Nadia, now it's your turn. What questions do you have for us?
+Nadia: Thank you. A few. First, what does the team look like? How many designers, and how do they work with engineering?
+Moira: We're a team of five right now, and you'd be the sixth. You'd be paired with the mobile team, so Priya's group, day to day. Designers sit in their planning and standups, and we run a weekly design crit on Thursdays.
+Nadia: Great. Second, how do you do research with technicians? Do you get to go on ride-alongs?
+Moira: Yes, that's a priority for me. We do about one ride-along a month, and we have a customer success team who can introduce us to shops. We've got the conflict screens due October 9th, so there'd be ride-alongs coming up.
+Nadia: That sounds wonderful. And Jordan, the last one is for you. What's the hardest thing about this role in the next six months?
+Jordan: Honestly, shipping offline mode well. We've decided to ship a read-only version first on October 27th, and full editing in November, so the design work on conflicts is on the critical path. The person in this role would own that, and they'd have to balance speed with getting it right.
+Nadia: That's the part that excites me most.
+Moira: Good. Let me tell you what happens next. We're talking to a couple of other candidates this week. We'd like to do reference checks, so we'll reach out to the two references you gave us. And we'll make a decision by October 7th, and I'll personally email you either way.
+Nadia: That sounds great. I'll let my references know to expect your call. Do you need anything else from me?
+Moira: I don't think so. Could you send over the full case study for the Routewise project, the long version, by Friday? It would help the team who couldn't be here today.
+Nadia: Of course. I'll send it tomorrow, actually.
+Moira: Wonderful. Thank you so much for your time, Nadia. This was a great conversation.
+Jordan: Yes, really enjoyed it. Thank you.
+Nadia: Thank you both. I really enjoyed it too. Speak soon.
