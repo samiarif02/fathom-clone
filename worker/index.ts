@@ -104,4 +104,26 @@ app.onError((err, c) => {
   return c.json({ error: err.message || "Something went wrong" }, 500);
 });
 
-export default app;
+/** Nightly demo reset: restore the seeded meetings and delete whatever visitors uploaded. */
+async function resetDemo(env: Bindings) {
+  const db = adminClient(env);
+  const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
+  const demo = users?.users.find((u) => u.email === DEMO_EMAIL);
+  if (!demo) return;
+  const { data: copied, error } = await db.rpc("reset_demo");
+  if (error) throw error;
+  let cursor: string | undefined;
+  let removed = 0;
+  do {
+    const page = await env.MEDIA.list({ prefix: `uploads/${demo.id}/`, cursor });
+    if (page.objects.length) await env.MEDIA.delete(page.objects.map((o) => o.key));
+    removed += page.objects.length;
+    cursor = page.truncated ? page.cursor : undefined;
+  } while (cursor);
+  console.log(`demo reset: ${copied} meetings restored, ${removed} visitor uploads removed`);
+}
+
+export default {
+  fetch: app.fetch,
+  scheduled: (_event, env, ctx) => ctx.waitUntil(resetDemo(env as Bindings)),
+} satisfies ExportedHandler<Env>;

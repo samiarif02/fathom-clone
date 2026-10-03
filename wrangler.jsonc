@@ -9,6 +9,8 @@
     "run_worker_first": ["/api/*"]
   },
   "observability": { "enabled": true },
+  // Nightly: rebuild the shared demo account from the template copy (see reset_demo()).
+  "triggers": { "crons": ["0 9 * * *"] },
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "fathom-clone-media", "remote": true }],
   "ai": { "binding": "AI", "remote": true },
   "vars": {
