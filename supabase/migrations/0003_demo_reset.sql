@@ -1,7 +1,7 @@
 -- The demo account is shared by everyone who clicks "Try the demo", so it is rebuilt nightly
 -- from a golden copy owned by a hidden template user. Dates shift so the newest meeting
--- always lands on "yesterday". Seeded highlights get deterministic share tokens, so their
--- public clip links survive resets.
+-- always lands on "yesterday". Copied rows get ids derived from the template ids, and seeded
+-- highlights get deterministic share tokens, so meeting URLs and clip links survive resets.
 
 create or replace function public.reset_demo()
 returns integer
@@ -24,13 +24,13 @@ begin
     into shift from meetings where owner_id = src;
 
   for m in select * from meetings where owner_id = src loop
-    insert into meetings (owner_id, title, started_at, duration_ms, source, media_key, media_kind, status, stage, error)
-    values (dst, m.title, m.started_at + shift, m.duration_ms, m.source, m.media_key, m.media_kind, m.status, m.stage, m.error)
-    returning id into new_id;
+    new_id := md5(m.id::text || ':demo')::uuid;
+    insert into meetings (id, owner_id, title, started_at, duration_ms, source, media_key, media_kind, status, stage, error)
+    values (new_id, dst, m.title, m.started_at + shift, m.duration_ms, m.source, m.media_key, m.media_kind, m.status, m.stage, m.error);
 
     create temp table if not exists pmap (old uuid primary key, new uuid not null) on commit drop;
     truncate pmap;
-    insert into pmap select p.id, gen_random_uuid() from participants p where p.meeting_id = m.id;
+    insert into pmap select p.id, md5(p.id::text || ':demo')::uuid from participants p where p.meeting_id = m.id;
 
     insert into participants (id, meeting_id, name, email, color, idx)
       select pm.new, new_id, p.name, p.email, p.color, p.idx

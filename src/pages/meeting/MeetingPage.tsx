@@ -82,7 +82,14 @@ export default function MeetingPage() {
     [meeting?.chapters, player.ms],
   );
 
-  if (error) return <div className="p-8 text-sm text-rose-600">{error}</div>;
+  if (error)
+    return (
+      <div className="mx-auto max-w-md px-4 py-16 text-center">
+        <p className="font-medium">This meeting isn't available</p>
+        <p className="mt-1 text-sm text-zinc-500">It may have been removed, or it belongs to another account.</p>
+        <Link to="/" className="mt-4 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">Back to all meetings</Link>
+      </div>
+    );
   if (!meeting) return <div className="grid h-full place-items-center text-zinc-400"><Loader2 className="size-5 animate-spin" /></div>;
 
   const seek = (ms: number) => player.seek(ms);
