@@ -52,11 +52,64 @@ settings alias.
 
 ## Canaries
 
-<!-- Filled in from the two canary sessions. -->
+Result: **pass.** Two separate sessions, two separate files. Each file has at
+least one PROMPT and one RESPONSE, both with UTC timestamps and the model. No
+errors in `capture-errors.log`.
 
-- Log files: _pending_
-- Canary 1, raw: _pending_
-- Canary 2, raw: _pending_
+- Log files:
+  - Session 1: `.agent-logs/2026-10-03_17-16-56_1b34b799-a7ae-4e3d-8a86-c3ed83c918c3.md`
+  - Session 2: `.agent-logs/2026-10-03_17-24-44_489ac014-96f4-445c-87ca-4b5c8beef123.md`
+
+- Canary 1, raw (session 1, entry 3):
+
+  ```
+  [LOG_ENTRY type=PROMPT num=3 session=1b34b799]
+  timestamp: 2026-10-03T17:22:25.362Z
+  model: claude-opus-5-5
+
+  CAPTURE TEST — 8x assignment, Sami Arif
+
+
+  [LOG_ENTRY type=RESPONSE num=3 session=1b34b799]
+  timestamp: 2026-10-03T17:22:32.738Z
+  model: claude-opus-5-5
+
+  Canary 1 is logged. It's PROMPT 3 in `.agent-logs/2026-10-03_17-16-56_1b34b799-a7ae-4e3d-8a86-c3ed83c918c3.md`, recorded at `2026-10-03T17:22:25.362Z` with `model: claude-opus-5-5`, exactly as you typed it.
+
+  My previous reply also reached the file, as RESPONSE 2, so both the prompt and response hooks work in this session. No capture errors have been written.
+
+  This reply is saved as RESPONSE 3 when the turn ends. Session 2 will confirm it, since it checks every entry when it fills in `CAPTURE-TEST.md`.
+
+  Next, type `/exit`, then run `claude` again in this folder and send the second canary.
+  ```
+
+- Canary 2 (session 2, entry 1): the planned standalone second-canary
+  session was skipped. Instead, the build kickoff session was used as the
+  second session, by choice. Its first exchange proves the same thing: a new
+  session id gets a new file, the first prompt is `model: unknown`, and the
+  response is captured. The entries are too long to paste whole, so here are
+  the raw headers and the first line of each (full text at lines 19–140 of the
+  session 2 file):
+
+  ```
+  [LOG_ENTRY type=PROMPT num=1 session=489ac014]
+  timestamp: 2026-10-03T17:24:44.051Z
+  model: unknown
+
+  <pasted_content id="429c">
+  ...
+
+  [LOG_ENTRY type=RESPONSE num=1 session=489ac014]
+  timestamp: 2026-10-03T17:26:57.063Z
+  model: claude-opus-5-5
+
+  I've finished reading the repo. I have the plan and data model ready, but three things need your answer before I build anything.
+  ...
+  ```
+
+- Known gap: session 1's PROMPT 1 (the pasted brief) has no RESPONSE 1.
+  "continue" was sent mid-turn, so it was logged as PROMPT 2, and the one
+  reply that answered both was filed as RESPONSE 2. Left as is.
 
 ## What did not work first, and other notes
 
