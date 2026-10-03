@@ -45,6 +45,22 @@ export default function Layout() {
         </div>
       </aside>
       <main className="min-w-0 flex-1 overflow-y-auto">
+        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-zinc-200 bg-white/95 px-4 py-2.5 backdrop-blur md:hidden">
+          <NavLink to="/" className="flex items-center gap-2 font-semibold tracking-tight">
+            <img src="/favicon.svg" alt="" className="size-6" /> Fathom Clone
+          </NavLink>
+          <nav className="flex items-center gap-1">
+            {nav.map(({ to, label, icon: Icon, end }) => (
+              <NavLink key={to} to={to} end={end} aria-label={label} title={label}
+                className={({ isActive }) => clsx("rounded-lg p-2", isActive ? "bg-brand-50 text-brand-700" : "text-zinc-600")}>
+                <Icon className="size-5" />
+              </NavLink>
+            ))}
+            <button onClick={() => signOut()} aria-label="Sign out" title="Sign out" className="rounded-lg p-2 text-zinc-600">
+              <LogOut className="size-5" />
+            </button>
+          </nav>
+        </header>
         <Outlet />
       </main>
     </div>
