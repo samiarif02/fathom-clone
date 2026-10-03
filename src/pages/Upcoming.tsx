@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Bot, CalendarDays, Loader2, Video } from "lucide-react";
 import { api } from "../lib/api";
-import { dayGroup } from "../lib/format";
 import { AvatarStack } from "../components/Avatar";
 
 type Event = {
@@ -20,7 +19,10 @@ export default function Upcoming() {
   const [data, setData] = useState<Res | null>(null);
   const [error, setError] = useState<string | null>(params.get("error") ? "Couldn't connect Google Calendar. Please try again." : null);
 
-  const load = () => api<Res>("/calendar/events").then(setData).catch((e) => setError(e.message));
+  const load = () =>
+    api<Res>("/calendar/events")
+      .then((r) => setData(r.connected === "sample" ? { ...r, events: sampleWeek() } : r))
+      .catch((e) => setError(e.message));
   useEffect(() => { load(); }, []);
 
   async function connect() {
@@ -39,8 +41,7 @@ export default function Upcoming() {
   const groups = useMemo(() => {
     const map = new Map<string, Event[]>();
     for (const e of data?.events ?? []) {
-      const d = new Date(e.start);
-      const label = dayGroup(e.start) === "Today" ? "Today" : d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+      const label = dayLabel(new Date(e.start));
       map.set(label, [...(map.get(label) ?? []), e]);
     }
     return [...map];
@@ -113,4 +114,34 @@ export default function Upcoming() {
       )}
     </div>
   );
+}
+
+function dayLabel(d: Date) {
+  const day = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const diff = Math.round((day(d) - day(new Date())) / 86400000);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  return d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+}
+
+/** A plausible week ahead for the demo account, at sensible local times for whoever is viewing. */
+function sampleWeek(): Event[] {
+  const ev = (id: string, title: string, days: number, hour: number, minute: number, mins: number, conference: Event["conference"], people: string[]): Event => {
+    const start = new Date();
+    start.setDate(start.getDate() + days);
+    start.setHours(hour, minute, 0, 0);
+    return {
+      id, title, start: start.toISOString(), end: new Date(start.getTime() + mins * 60000).toISOString(),
+      attendees: people.map((p) => ({ name: p, email: `${p.split(" ")[0].toLowerCase()}@fieldnote.example` })),
+      conference, link: null, sample: true,
+    };
+  };
+  return [
+    ev("s1", "Mobile standup", 1, 9, 15, 15, "meet", ["Priya Raman", "Wei Chen", "Sofia Alvarez", "Ben Carter"]),
+    ev("s2", "Pricing page copy review", 1, 11, 0, 30, "meet", ["Aman Sethi", "Moira Byrne"]),
+    ev("s3", "Halcyon tailored demo", 2, 14, 0, 45, "zoom", ["Marcus Bell", "Linda Ortiz"]),
+    ev("s4", "Acme Mechanical weekly status", 3, 10, 30, 30, "teams", ["Karen Walsh", "Greg Thompson", "Helen Park"]),
+    ev("s5", "SSO customer call #2", 4, 16, 0, 30, "zoom", ["Karen Walsh"]),
+    ev("s6", "Q4 planning check-in", 6, 10, 0, 60, "meet", ["Daniel Mercer", "Priya Raman", "Rishi Kapoor", "Moira Byrne", "Karen Walsh", "Aman Sethi", "Tessa van der Merwe"]),
+  ];
 }

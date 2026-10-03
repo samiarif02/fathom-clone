@@ -73,7 +73,8 @@ calendar.post("/disconnect", async (c) => {
 calendar.get("/events", async (c) => {
   const db = adminClient(c.env);
   const { data: user } = await db.auth.admin.getUserById(c.get("userId"));
-  if (user.user?.email === DEMO_EMAIL) return c.json({ connected: "sample", email: null, events: sampleEvents() });
+  // The demo account can't connect a real Google account; the browser shows a sample week instead.
+  if (user.user?.email === DEMO_EMAIL) return c.json({ connected: "sample", email: null, events: [] });
 
   const { data: account } = await db.from("calendar_accounts").select("google_email,refresh_token").eq("user_id", c.get("userId")).maybeSingle();
   if (!account) return c.json({ connected: false, configured: !!c.env.GOOGLE_CLIENT_ID, events: [] });
@@ -118,27 +119,4 @@ function toUpcoming(e: GoogleEvent): UpcomingEvent {
     conference: video?.includes("zoom.us") ? "zoom" : video?.includes("teams.microsoft") ? "teams" : video ? "meet" : null,
     link: video,
   };
-}
-
-/** The demo account can't connect a real Google account, so it gets a plausible week ahead. */
-function sampleEvents(): UpcomingEvent[] {
-  const at = (days: number, h: number, m = 0) => {
-    const d = new Date();
-    d.setUTCDate(d.getUTCDate() + days);
-    d.setUTCHours(h, m, 0, 0);
-    return d.toISOString();
-  };
-  const ev = (id: string, title: string, days: number, h: number, mins: number, conference: UpcomingEvent["conference"], people: string[]): UpcomingEvent => ({
-    id, title, start: at(days, h), end: new Date(new Date(at(days, h)).getTime() + mins * 60000).toISOString(),
-    attendees: people.map((p) => ({ name: p, email: `${p.split(" ")[0].toLowerCase()}@fieldnote.example` })),
-    conference, link: null, sample: true,
-  });
-  return [
-    ev("s1", "Mobile standup", 1, 16, 15, "meet", ["Priya Raman", "Wei Chen", "Sofia Alvarez", "Ben Carter"]),
-    ev("s2", "Pricing page copy review", 1, 18, 30, "meet", ["Aman Sethi", "Moira Byrne"]),
-    ev("s3", "Halcyon tailored demo", 2, 21, 45, "zoom", ["Marcus Bell", "Linda Ortiz"]),
-    ev("s4", "Acme Mechanical weekly status", 3, 18, 30, "teams", ["Karen Walsh", "Greg Thompson", "Helen Park"]),
-    ev("s5", "SSO customer call #2", 4, 17, 30, "zoom", ["Karen Walsh"]),
-    ev("s6", "Q4 planning check-in", 6, 17, 60, "meet", ["Daniel Mercer", "Priya Raman", "Rishi Kapoor", "Moira Byrne", "Karen Walsh", "Aman Sethi", "Tessa van der Merwe"]),
-  ];
 }
