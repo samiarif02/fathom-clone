@@ -63,6 +63,20 @@ Try a shared clip while signed out: https://fathom-clone.fathom-clone.workers.de
 - **Uploads are capped at 300 MB.**
 - **No pixel-level copy of the real UI.** The planned `/recon` folder (screenshots and notes from my own Fathom test call) wasn't in the repo while this was built. The UI follows Fathom's general shape (player and timeline on the left, notes and transcript on the right) rather than copying it exactly.
 
+## What was tested
+
+Every item below was checked by hand in Chrome against the deployed Worker code with the real database, storage and AI.
+- **Playback sync:** a timestamp click seeks the video. The transcript follows along, with the highlighted line and the "X speaking" label matching the lit tile in the video. Clicking a line seeks. Per-speaker next and previous turn jumps work.
+- **Notes:** a template generated on demand (Customer success, hour-long call, about 30s). Every bullet and action item links to its moment. Citations are checked against the transcript, and clear misses are re-anchored.
+- **Highlights:** created from the player and from a transcript line. Sharing gives a public link that works signed out and plays only the clip window. Turning the link off returns 404. Delete works.
+- **Action items** tick off, and **speakers** can be renamed. Both persist across a reload.
+- **Search** across meetings, with deep links to the exact second.
+- **Capture:** upload through the New recording page, and a real browser-tab recording, each transcribed with chapters and notes.
+- **Sign-up** with a personal account.
+- **Google Calendar:** connected a real account and a real event showed up on Upcoming with its Meet badge.
+- **Demo reset:** meeting URLs and shared-clip links stay the same across resets.
+- **Phone-width layout.**
+
 ## Architecture
 
 ```

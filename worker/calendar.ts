@@ -26,8 +26,14 @@ export const calendar = new Hono<AppEnv>();
 calendar.get("/callback", async (c) => {
   const done = (q: string) => c.redirect(`/calendar?${q}`);
   const [userId, exp, sig] = (c.req.query("state") ?? "").split(".");
-  if (!userId || Number(exp) < Date.now() / 1000 || sig !== (await sign(c.env, `${userId}.${exp}`))) return done("error=expired");
-  if (c.req.query("error") || !c.req.query("code")) return done("error=denied");
+  if (!userId || Number(exp) < Date.now() / 1000 || sig !== (await sign(c.env, `${userId}.${exp}`))) {
+    console.error("calendar callback: bad or expired state");
+    return done("error=expired");
+  }
+  if (c.req.query("error") || !c.req.query("code")) {
+    console.error("calendar callback: google returned", c.req.query("error"));
+    return done(`error=${encodeURIComponent(c.req.query("error") ?? "denied")}`);
+  }
 
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
@@ -37,12 +43,19 @@ calendar.get("/callback", async (c) => {
       redirect_uri: redirectUri(c.req.raw), grant_type: "authorization_code",
     }),
   });
-  const tokens = (await res.json()) as { refresh_token?: string; id_token?: string; error?: string };
-  if (!tokens.refresh_token) return done("error=token");
+  const tokens = (await res.json()) as { refresh_token?: string; id_token?: string; error?: string; error_description?: string };
+  if (!tokens.refresh_token) {
+    console.error("calendar callback: token exchange failed", res.status, tokens.error, tokens.error_description);
+    return done(`error=${encodeURIComponent(tokens.error ?? "token")}`);
+  }
   const claims = JSON.parse(atob(tokens.id_token!.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
-  await adminClient(c.env).from("calendar_accounts").upsert({
+  const { error } = await adminClient(c.env).from("calendar_accounts").upsert({
     user_id: userId, google_email: claims.email, refresh_token: tokens.refresh_token, connected_at: new Date().toISOString(),
   });
+  if (error) {
+    console.error("calendar callback: saving the connection failed", error.message);
+    return done("error=save");
+  }
   return done("connected=1");
 });
 
@@ -98,7 +111,11 @@ calendar.get("/events", async (c) => {
   const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?${params}`, {
     headers: { Authorization: `Bearer ${access_token}` },
   });
-  const body = (await res.json()) as { items?: GoogleEvent[] };
+  const body = (await res.json()) as { items?: GoogleEvent[]; error?: { message?: string } };
+  if (!res.ok) {
+    console.error("calendar events: google error", res.status, body.error?.message);
+    return c.json({ connected: true, email: account.google_email, events: [], error: body.error?.message ?? `Google returned ${res.status}` });
+  }
   const events = (body.items ?? []).filter((e) => e.start?.dateTime).map(toUpcoming);
   return c.json({ connected: true, email: account.google_email, events });
 });

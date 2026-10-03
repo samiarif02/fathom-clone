@@ -9,7 +9,7 @@ type Event = {
   attendees: { name: string; email: string }[];
   conference: "meet" | "zoom" | "teams" | null; link: string | null; sample?: boolean;
 };
-type Res = { connected: boolean | "sample"; configured?: boolean; expired?: boolean; email?: string | null; events: Event[] };
+type Res = { connected: boolean | "sample"; configured?: boolean; expired?: boolean; email?: string | null; events: Event[]; error?: string };
 
 const COLORS = ["#6366f1", "#0ea5e9", "#10b981", "#f59e0b", "#ef4444", "#a855f7", "#ec4899", "#14b8a6"];
 const CONF = { meet: "Google Meet", zoom: "Zoom", teams: "Microsoft Teams" } as const;
@@ -17,11 +17,16 @@ const CONF = { meet: "Google Meet", zoom: "Zoom", teams: "Microsoft Teams" } as 
 export default function Upcoming() {
   const [params] = useSearchParams();
   const [data, setData] = useState<Res | null>(null);
-  const [error, setError] = useState<string | null>(params.get("error") ? "Couldn't connect Google Calendar. Please try again." : null);
+  const [error, setError] = useState<string | null>(
+    params.get("error") ? `Couldn't connect Google Calendar (${params.get("error")}). Please try again.` : null,
+  );
 
   const load = () =>
     api<Res>("/calendar/events")
-      .then((r) => setData(r.connected === "sample" ? { ...r, events: sampleWeek() } : r))
+      .then((r) => {
+        setData(r.connected === "sample" ? { ...r, events: sampleWeek() } : r);
+        if (r.error) setError(`Couldn't read your calendar: ${r.error}`);
+      })
       .catch((e) => setError(e.message));
   useEffect(() => { load(); }, []);
 
