@@ -49,14 +49,29 @@ function alreadySent(key: string) {
   return false;
 }
 
-export function notify(title: string, body: string, onClick?: () => void) {
-  if (notificationPermission() !== "granted") return;
-  const n = new Notification(title, { body, icon: "/favicon.svg", requireInteraction: true });
-  n.onclick = () => {
-    window.focus();
-    onClick?.();
-    n.close();
-  };
+export type NotifyResult = "shown" | "blocked" | "failed";
+
+/** Shows a desktop notification and reports what the browser says happened. */
+export function notify(title: string, body: string, onClick?: () => void, tag?: string): Promise<NotifyResult> {
+  if (notificationPermission() !== "granted") return Promise.resolve("blocked");
+  return new Promise((resolve) => {
+    try {
+      const n = new Notification(title, {
+        body, icon: "/icon-192.png", badge: "/icon-192.png", requireInteraction: true,
+        ...(tag ? { tag, renotify: true } : {}),
+      } as NotificationOptions);
+      n.onshow = () => resolve("shown");
+      n.onerror = () => resolve("failed");
+      n.onclick = () => {
+        window.focus();
+        onClick?.();
+        n.close();
+      };
+      setTimeout(() => resolve("shown"), 3000); // some browsers never fire onshow
+    } catch {
+      resolve("failed"); // e.g. mobile Chrome, which only allows notifications from a service worker
+    }
+  });
 }
 
 // ---- Which events need attention ----
@@ -125,9 +140,9 @@ export function MeetingAlerts() {
       const key = `${a.event.id}:${a.event.start}:${a.kind}`;
       if (alreadySent(key)) continue;
       if (a.kind === "soon") {
-        notify(`Starts in ${a.minutes} min: ${a.event.title}`, "Click to join and start recording.", () => joinAndRecord(a.event, navigate));
+        notify(`Starts in ${a.minutes} min: ${a.event.title}`, "Click to join and start recording.", () => joinAndRecord(a.event, navigate), key);
       } else {
-        notify(`${a.event.title} has started`, "You're not recording it. Click to start recording now.", () => navigate(recordPath(a.event)));
+        notify(`${a.event.title} has started`, "You're not recording it. Click to start recording now.", () => navigate(recordPath(a.event)), key);
       }
     }
   }, [alerts.map((a) => `${a.event.id}:${a.kind}`).join("|")]); // eslint-disable-line react-hooks/exhaustive-deps

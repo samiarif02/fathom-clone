@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router";
 import { Bell, BellRing, Bot, CalendarDays, CheckCircle2, Circle, Loader2, Video } from "lucide-react";
 import { api } from "../lib/api";
 import { getSupabase } from "../lib/supabase";
-import { demoSoonEvent, joinAndRecord, notificationPermission, notificationsSupported, notify, type CalendarEvent } from "../lib/alerts";
+import { demoSoonEvent, joinAndRecord, notificationPermission, notificationsSupported, notify, type CalendarEvent, type NotifyResult } from "../lib/alerts";
 import { AvatarStack } from "../components/Avatar";
 
 type Event = CalendarEvent;
@@ -18,6 +18,7 @@ export default function Upcoming() {
   const navigate = useNavigate();
   const [recorded, setRecorded] = useState<Map<string, string>>(new Map());
   const [permission, setPermission] = useState(notificationPermission());
+  const [testResult, setTestResult] = useState<{ result: NotifyResult | "sending"; title: string; body: string; at: Date } | null>(null);
   const [error, setError] = useState<string | null>(
     params.get("error") ? `Couldn't connect Google Calendar (${params.get("error")}). Please try again.` : null,
   );
@@ -46,9 +47,14 @@ export default function Upcoming() {
     setPermission(await Notification.requestPermission());
   }
 
-  function testAlert() {
+  async function testAlert() {
     const e = data?.events.find((x) => new Date(x.start).getTime() > Date.now());
-    notify(e ? `Starts in 5 min: ${e.title}` : "Meeting alerts are on", e ? "Click to join and start recording." : "You'll be reminded before meetings.", e ? () => joinAndRecord(e, navigate) : undefined);
+    const title = e ? `Starts in 5 min: ${e.title}` : "Meeting alerts are on";
+    const body = e ? "Click to join and start recording." : "You'll be reminded before meetings.";
+    setTestResult({ result: "sending", title, body, at: new Date() });
+    const result = await notify(title, body, e ? () => joinAndRecord(e, navigate) : undefined, "fathom-clone-test-alert");
+    setTestResult({ result, title, body, at: new Date() });
+    setPermission(notificationPermission());
   }
 
   async function connect() {
@@ -94,6 +100,7 @@ export default function Upcoming() {
                 ? "Desktop notifications are blocked for this site. You'll still see banners in the app; allow notifications in your browser's site settings for pop-ups."
                 : "Get a reminder 5 minutes before each meeting, and a nudge if it starts while you're not recording."}
             <span className="block text-xs text-zinc-500">Alerts work while Fathom Clone is open in a tab.</span>
+            {testResult && <TestAlertResult {...testResult} />}
           </span>
           {permission === "granted" ? (
             <button onClick={testAlert} className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50">Send a test alert</button>
@@ -201,4 +208,35 @@ function sampleWeek(): Event[] {
     ev("s5", "SSO customer call #2", 4, 16, 0, 30, "zoom", ["Karen Walsh"]),
     ev("s6", "Q4 planning check-in", 6, 10, 0, 60, "meet", ["Daniel Mercer", "Priya Raman", "Rishi Kapoor", "Moira Byrne", "Karen Walsh", "Aman Sethi", "Tessa van der Merwe"]),
   ];
+}
+
+const isMac = typeof navigator !== "undefined" && /Mac/i.test(navigator.platform || navigator.userAgent);
+
+/** Feedback for "Send a test alert": a preview of the alert, and how to fix it if it didn't appear. */
+function TestAlertResult({ result, title, body, at }: { result: NotifyResult | "sending"; title: string; body: string; at: Date }) {
+  if (result === "sending") return <span className="mt-2 block text-xs text-zinc-500">Sending a test alert…</span>;
+  return (
+    <span role="status" className="mt-3 block rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-700">
+      <span className="flex items-start gap-2.5">
+        <img src="/icon-192.png" alt="" className="mt-0.5 size-8 rounded-lg" />
+        <span className="min-w-0">
+          <span className="block font-semibold text-zinc-900">{title}</span>
+          <span className="block text-zinc-600">{body}</span>
+        </span>
+      </span>
+      {result === "shown" ? (
+        <span className="mt-2.5 block">
+          <b className="text-emerald-700">Sent at {at.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", second: "2-digit" })}.</b>{" "}
+          Your browser accepted it, so it should be on screen now.{" "}
+          {isMac
+            ? <>Don't see it? macOS may be hiding it: open <b>System Settings → Notifications → Google Chrome</b> (or your browser), turn on <b>Allow notifications</b> and pick <b>Banners</b> or <b>Alerts</b>, and turn off <b>Focus / Do Not Disturb</b>. Also check Notification Center (click the clock in the menu bar).</>
+            : <>Don't see it? Check your operating system's notification settings for this browser, and any Do Not Disturb mode.</>}
+        </span>
+      ) : result === "blocked" ? (
+        <span className="mt-2.5 block text-rose-700">Notifications are blocked for this site. Click the icon left of the address bar → Site settings → Notifications → Allow, then try again.</span>
+      ) : (
+        <span className="mt-2.5 block text-rose-700">This browser couldn't show the notification (mobile browsers often don't allow them from a web page). In-app banners still work.</span>
+      )}
+    </span>
+  );
 }
