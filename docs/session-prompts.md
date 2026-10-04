@@ -1,7 +1,7 @@
 # Session prompts
 
 The prompts to send, in order. Run every session from this folder
-(`~/WebstormProjects/fathom-rebuild`), not from `../fathom-clone`. The capture
+(`~/WebstormProjects/fathom-rebuild`). The capture
 hook only fires for sessions started in this repo.
 
 ## Session 1
@@ -42,7 +42,7 @@ Capture is verified (CAPTURE-TEST.md). Now the actual assignment. Here is the br
 <paste the full "Rebuild a live product in 24 hours… fathom.video" brief here>
 
 Context:
-- I'm Sami (GitHub samiarif02). This repo is github.com/samiarif02/fathom-clone (public). I'm building this myself from scratch. ../fathom-clone on disk is a colleague's separate project: do not open, read or copy anything from it.
+- I'm Sami (GitHub samiarif02). This repo is github.com/samiarif02/fathom-clone (public). I'm building this myself from scratch.
 - I've used fathom.video on the free plan. My screenshots, notes, and the transcript/summary from my own test call are in /recon. Read them first. They're the source of truth for how the product behaves.
 
 Stack (push back if you think something is wrong for a one-day build):

@@ -27,6 +27,11 @@ Try a shared clip while signed out: https://fathom-clone.fathom-clone.workers.de
 - **Action items** carry an owner and a link to the moment they were agreed. You can tick them off.
 - Keyboard: space plays and pauses, ←/→ skip 5 seconds.
 
+**Ask.** A chat panel beside the meetings list, plus an Ask tab on every meeting, answers questions across your calls, e.g. "list my open action items" or "why did offline mode slip?".
+- It answers only from your meetings (notes, action items, matching transcript lines, or the whole transcript for one meeting).
+- Every claim links to the moment it came from.
+- Free AI has daily limits, so when the Workers AI allowance runs out, chat falls back to Gemini's free tier.
+
 **2. Meetings list and search across all meetings.** One Postgres full-text query covers titles, every transcript line and every summary. Results are grouped by meeting with highlighted snippets. A transcript hit opens the meeting at that second.
 
 **3. Highlights and shareable clips.**
