@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { CheckSquare, Clock, FileText, Loader2, MessageSquareText, Search, Sparkles, Star, X } from "lucide-react";
+import { AskPanel } from "../components/AskPanel";
 import { listMeetings, search } from "../lib/data";
 import { clock, dateTime, dayGroup, duration } from "../lib/format";
 import type { MeetingSummaryRow, SearchHit } from "../lib/types";
@@ -14,9 +15,19 @@ export default function Meetings() {
   const [meetings, setMeetings] = useState<MeetingSummaryRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const [askOpen, setAskOpen] = useState(() => {
+    try { return localStorage.getItem("fathom-clone:ask-open") !== "0"; } catch { return true; }
+  });
+  const [askSheet, setAskSheet] = useState(false); // phones: full-screen sheet
+  const toggleAsk = (open: boolean) => {
+    setAskOpen(open);
+    try { localStorage.setItem("fathom-clone:ask-open", open ? "1" : "0"); } catch { /* ignore */ }
+  };
+
   useEffect(() => {
     listMeetings().then(setMeetings).catch((e) => setError(e.message));
   }, []);
+  const askMeetings = (meetings ?? []).filter((m) => m.status === "ready").map((m) => ({ id: m.id, title: m.title }));
 
   // Debounce typing into the ?q= param so results are shareable and survive back/forward.
   useEffect(() => {
@@ -27,12 +38,20 @@ export default function Meetings() {
   }, [input, q, setParams]);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-8">
+    <div className="lg:flex lg:items-start">
+    <div className="mx-auto min-w-0 max-w-5xl flex-1 px-4 py-6 md:px-8 md:py-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-semibold tracking-tight">Meetings</h1>
-        <Link to="/new" className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700">
-          New recording
-        </Link>
+        <div className="flex items-center gap-2">
+          {!askOpen && (
+            <button onClick={() => toggleAsk(true)} className="hidden items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 lg:inline-flex">
+              <Sparkles className="size-4 text-brand-600" /> Ask
+            </button>
+          )}
+          <Link to="/new" className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700">
+            New recording
+          </Link>
+        </div>
       </div>
 
       <div className="relative mt-5">
@@ -52,6 +71,25 @@ export default function Meetings() {
 
       {error && <p className="mt-6 text-sm text-rose-600">{error}</p>}
       {q ? <SearchResults q={q} /> : <MeetingList meetings={meetings} />}
+    </div>
+
+    {/* Ask: right column on desktop, like Fathom's "Ask" panel */}
+    {askOpen && (
+      <aside className="sticky top-0 hidden h-screen w-[400px] shrink-0 border-l border-zinc-200 lg:block">
+        <AskPanel meetings={askMeetings} onClose={() => toggleAsk(false)} className="h-full" />
+      </aside>
+    )}
+
+    {/* Phones and tablets: floating button + full-screen sheet */}
+    <button onClick={() => setAskSheet(true)}
+      className="fixed bottom-5 right-5 z-30 inline-flex items-center gap-2 rounded-full bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-700 lg:hidden">
+      <Sparkles className="size-4" /> Ask
+    </button>
+    {askSheet && (
+      <div className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden" role="dialog" aria-label="Ask about your meetings">
+        <AskPanel meetings={askMeetings} onClose={() => setAskSheet(false)} className="h-full" />
+      </div>
+    )}
     </div>
   );
 }

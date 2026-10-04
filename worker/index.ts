@@ -7,16 +7,17 @@ import { generateSummary, type AiRunner } from "../shared/pipeline.ts";
 import { templateById, type TemplateId } from "../shared/templates.ts";
 import { processNext, uploads } from "./uploads";
 import { calendar } from "./calendar";
+import { ask } from "./ask";
+import { chatAi, isQuotaError } from "./ai";
 
 const app = new Hono<AppEnv>().basePath("/api");
 
-const workersAi = (env: Bindings): AiRunner => (model, body) =>
-  env.AI.run(model as Parameters<Ai["run"]>[0], body as never) as Promise<unknown>;
+const workersAi = (env: Bindings): AiRunner => chatAi(env);
 
 /** Workers AI's free plan has a daily allowance; say so plainly instead of a stack trace. */
 function aiError(e: unknown) {
   const msg = e instanceof Error ? e.message : String(e);
-  if (/neuron|quota|4006|limit/i.test(msg)) {
+  if (isQuotaError(e)) {
     return { status: 429 as const, error: "Today's free AI allowance is used up. Try this template again tomorrow." };
   }
   return { status: 502 as const, error: `AI generation failed: ${msg.slice(0, 200)}` };
@@ -71,6 +72,7 @@ app.get("/public/clips/:token", async (c) => {
 // ---- Signed-in routes ----------------------------------------------------------------
 app.route("/uploads", uploads);
 app.route("/calendar", calendar);
+app.route("/ask", ask);
 app.use("/meetings/*", requireUser);
 
 app.post("/meetings/:id/process", async (c) => {

@@ -13,8 +13,9 @@ import { Speakers } from "./Speakers";
 import { Transcript } from "./Transcript";
 import { Summary } from "./Summary";
 import { HighlightComposer, HighlightList, type Draft } from "./Highlights";
+import { AskPanel } from "../../components/AskPanel";
 
-type Tab = "summary" | "transcript";
+type Tab = "summary" | "transcript" | "ask";
 
 export default function MeetingPage() {
   const { id } = useParams();
@@ -212,16 +213,18 @@ export default function MeetingPage() {
       {/* Right: notes and transcript */}
       <aside className="flex min-h-[70vh] flex-col border-t border-zinc-200 bg-white lg:h-full lg:min-h-0 lg:border-l lg:border-t-0">
         <div className="flex border-b border-zinc-200 px-2">
-          {(["summary", "transcript"] as const).map((t) => (
+          {(["summary", "transcript", "ask"] as const).map((t) => (
             <button key={t} onClick={() => setTab(t)}
               className={clsx("relative px-4 py-3 text-sm font-medium capitalize", tab === t ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-800")}>
-              {t === "summary" ? "AI notes" : "Transcript"}
+              {t === "summary" ? "AI notes" : t === "transcript" ? "Transcript" : "Ask"}
               {tab === t && <span className="absolute inset-x-3 bottom-0 h-0.5 rounded bg-brand-600" />}
             </button>
           ))}
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {tab === "summary" ? (
+        <div className={clsx("min-h-0 flex-1", tab === "ask" ? "flex flex-col" : "overflow-y-auto")}>
+          {tab === "ask" ? (
+            <AskPanel fixedMeetingId={meeting.id} className="min-h-[60vh] flex-1 lg:min-h-0" />
+          ) : tab === "summary" ? (
             <Summary
               meetingId={meeting.id} summaries={meeting.summaries} actionItems={meeting.action_items} participants={meeting.participants}
               template={template} onTemplate={pickTemplate} onSeek={seek}

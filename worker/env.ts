@@ -4,6 +4,7 @@ export type Bindings = Omit<Env, "SUPABASE_URL" | "SUPABASE_ANON_KEY"> & {
   SUPABASE_SERVICE_ROLE_KEY: string;
   MEDIA_SIGNING_KEY: string;
   DEMO_PASSWORD: string;
+  GEMINI_API_KEY?: string;
   GOOGLE_CLIENT_ID?: string;
   GOOGLE_CLIENT_SECRET?: string;
 };
