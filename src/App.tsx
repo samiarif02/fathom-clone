@@ -8,6 +8,7 @@ import MeetingPage from "./pages/meeting/MeetingPage";
 import Clip from "./pages/Clip";
 import NewRecording from "./pages/NewRecording";
 import Upcoming from "./pages/Upcoming";
+import Landing from "./pages/landing/Landing";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
@@ -20,10 +21,11 @@ function RequireAuth({ children }: { children: ReactNode }) {
 export default function App() {
   return (
     <Routes>
+      <Route index element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/c/:token" element={<Clip />} />
       <Route element={<RequireAuth><Layout /></RequireAuth>}>
-        <Route index element={<Meetings />} />
+        <Route path="/meetings" element={<Meetings />} />
         <Route path="/meetings/:id" element={<MeetingPage />} />
         <Route path="/new" element={<NewRecording />} />
         <Route path="/calendar" element={<Upcoming />} />

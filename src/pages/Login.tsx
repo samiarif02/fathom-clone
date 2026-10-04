@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Navigate, useLocation } from "react-router";
+import { Link, Navigate, useLocation, useSearchParams } from "react-router";
 import { PlayCircle } from "lucide-react";
 import { signInAsDemo, useAuth } from "../lib/auth";
 import { getSupabase } from "../lib/supabase";
@@ -7,13 +7,14 @@ import { getSupabase } from "../lib/supabase";
 export default function Login() {
   const { session } = useAuth();
   const location = useLocation();
+  const [params] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup">(params.get("mode") === "signup" ? "signup" : "signin");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  if (session) return <Navigate to={(location.state as { from?: string })?.from ?? "/"} replace />;
+  if (session) return <Navigate to={(location.state as { from?: string })?.from ?? "/meetings"} replace />;
 
   async function run(fn: () => Promise<void>) {
     setBusy(true);
@@ -44,8 +45,8 @@ export default function Login() {
     <div className="grid min-h-full place-items-center px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center">
-          <img src="/favicon.svg" alt="" className="mb-4 size-11" />
-          <h1 className="text-2xl font-semibold tracking-tight">Fathom Clone</h1>
+          <Link to="/" aria-label="Back to the home page"><img src="/favicon.svg" alt="" className="mb-4 size-11" /></Link>
+          <h1 className="text-2xl font-semibold tracking-tight">{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
           <p className="mt-1 text-sm text-zinc-500">Recordings, transcripts and AI notes for every meeting.</p>
         </div>
 

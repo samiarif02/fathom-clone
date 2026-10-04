@@ -2,7 +2,7 @@
 
 A rebuild of [fathom.video](https://fathom.video), the AI meeting notetaker, built in one day.
 
-**Live:** https://fathom-clone.fathom-clone.workers.dev. Click **Try the demo account**; no sign-up needed.
+**Live:** https://fathom-clone.fathom-clone.workers.dev. The landing page has **Try the live demo**; no sign-up needed.
 **Walkthrough script:** [docs/walkthrough.md](docs/walkthrough.md)
 
 Try a shared clip while signed out: https://fathom-clone.fathom-clone.workers.dev/c/demo-77b76b769e
@@ -10,6 +10,11 @@ Try a shared clip while signed out: https://fathom-clone.fathom-clone.workers.de
 ---
 
 ## What it does
+
+**0. Landing page** (`/`). It follows the structure of fathom.ai section by section: starfield hero with a product collage, feature carousel, marquee, teams/individuals tabs, three pillars, stats, product shot, use cases, "works where you meet", final call to action and footer.
+- The copy, screenshots and numbers are our own; the screenshots are real captures of this app.
+- There are no Fathom assets, invented ratings or customer logos.
+- The buttons lead into the app: sign-up, log-in, and a one-click demo sign-in.
 
 **1. The meeting page** is the core of the product, and it got most of the time.
 - Video playback synced to the transcript:

@@ -7,7 +7,13 @@
   --color-brand-500: #6366f1;
   --color-brand-600: #4f46e5;
   --color-brand-700: #4338ca;
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-cta: "Barlow Semi Condensed", ui-sans-serif, system-ui, sans-serif;
 }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes float-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
 html, body, #root { height: 100%; }
 body { @apply bg-zinc-50 text-zinc-900 antialiased; }

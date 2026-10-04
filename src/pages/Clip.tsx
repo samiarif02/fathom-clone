@@ -119,7 +119,7 @@ function Shell({ children }: { children: React.ReactNode }) {
           <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
             <img src="/favicon.svg" alt="" className="size-6" /> Fathom Clone
           </Link>
-          <Link to="/login" className="text-sm font-medium text-brand-600 hover:text-brand-700">Try it free</Link>
+          <Link to="/login?mode=signup" className="text-sm font-medium text-brand-600 hover:text-brand-700">Try it free</Link>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">{children}</main>

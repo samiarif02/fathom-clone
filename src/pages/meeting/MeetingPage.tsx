@@ -87,7 +87,7 @@ export default function MeetingPage() {
       <div className="mx-auto max-w-md px-4 py-16 text-center">
         <p className="font-medium">This meeting isn't available</p>
         <p className="mt-1 text-sm text-zinc-500">It may have been removed, or it belongs to another account.</p>
-        <Link to="/" className="mt-4 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">Back to all meetings</Link>
+        <Link to="/meetings" className="mt-4 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">Back to all meetings</Link>
       </div>
     );
   if (!meeting) return <div className="grid h-full place-items-center text-zinc-400"><Loader2 className="size-5 animate-spin" /></div>;
@@ -108,7 +108,7 @@ export default function MeetingPage() {
       <div className="min-w-0 lg:overflow-y-auto">
         <div className="mx-auto max-w-4xl space-y-5 px-4 py-5 md:px-6">
           <header>
-            <Link to="/" className="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 hover:text-zinc-800">
+            <Link to="/meetings" className="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 hover:text-zinc-800">
               <ArrowLeft className="size-3.5" /> All meetings
             </Link>
             <h1 className="mt-2 text-xl font-semibold tracking-tight">{meeting.title}</h1>

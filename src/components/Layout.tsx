@@ -5,7 +5,7 @@ import { signOut, useAuth } from "../lib/auth";
 import { MeetingAlerts } from "../lib/alerts";
 
 const nav = [
-  { to: "/", label: "Meetings", icon: Video, end: true },
+  { to: "/meetings", label: "Meetings", icon: Video, end: true },
   { to: "/calendar", label: "Upcoming", icon: CalendarDays },
 ];
 
@@ -47,7 +47,7 @@ export default function Layout() {
       </aside>
       <main className="min-w-0 flex-1 overflow-y-auto">
         <header className="sticky top-0 z-20 flex items-center justify-between border-b border-zinc-200 bg-white/95 px-4 py-2.5 backdrop-blur md:hidden">
-          <NavLink to="/" className="flex items-center gap-2 font-semibold tracking-tight">
+          <NavLink to="/meetings" className="flex items-center gap-2 font-semibold tracking-tight">
             <img src="/favicon.svg" alt="" className="size-6" /> Fathom Clone
           </NavLink>
           <nav className="flex items-center gap-1">
