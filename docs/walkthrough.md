@@ -34,5 +34,5 @@ Open https://fathom-clone.fathom-clone.workers.dev in a fresh browser window, si
 
 ## 4:30–5:00 What's stubbed and what I left out
 - **New recording**: "Upload, or record a tab plus mic. It transcribes with speaker labels, then writes chapters and notes."
-- **Upcoming**: "Google Calendar, read-only. The demo shows a sample week."
+- **Upcoming**: "Google Calendar, read-only. The demo shows a sample week. Since there's no bot, the app makes manual capture hard to miss: Join & record opens the call and the recorder in one click, and alerts fire 5 minutes before a meeting and again if it starts while nothing is recording." (The demo has a sample meeting a few minutes out, so the banner appears.)
 - "Left out: a real bot, Ask-AI chat, CRM sync, and real clip files (clips are a window over the recording). The README has the reasons."

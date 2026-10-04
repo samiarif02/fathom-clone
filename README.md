@@ -35,6 +35,8 @@ Try a shared clip while signed out: https://fathom-clone.fathom-clone.workers.de
 - **A summary that stays good at length:** chapters are found first, and the General notes are then written per chapter. Every bullet cites a transcript line, so you can check it.
 
 **5. Calendar (Google, read-only).** The **Upcoming** page lists the next 14 days of events and detects Meet, Zoom and Teams links.
+- **Join & record** opens the call and the recorder in one click, with the event's title. The recording is linked to the event, and Upcoming then shows "Recorded".
+- **Meeting alerts:** a banner and a desktop notification 5 minutes before each meeting. A louder one appears if the meeting has started and nothing is recording, which covers "forgot to hit record". Alerts work while the app is open in a tab; there's no background push.
 - The demo account shows a sample week, because it can't connect a real Google account.
 - The real OAuth flow is wired up, but the Google app is in *testing* mode, so only listed test users can connect. Opening it to everyone needs Google's verification review for calendar scopes.
 
@@ -74,6 +76,7 @@ Every item below was checked by hand in Chrome against the deployed Worker code 
 - **Capture:** upload through the New recording page, and a real browser-tab recording, each transcribed with chapters and notes.
 - **Sign-up** with a personal account.
 - **Google Calendar:** connected a real account and a real event showed up on Upcoming with its Meet badge.
+- **Alerts:** a real meeting that had started without a recording raised the "not recording" banner, the banner hides while recording, Join & record opens the Meet link, and the desktop notification appears once allowed.
 - **Demo reset:** meeting URLs and shared-clip links stay the same across resets.
 - **Phone-width layout.**
 
