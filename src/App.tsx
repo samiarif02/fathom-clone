@@ -9,6 +9,7 @@ import Clip from "./pages/Clip";
 import NewRecording from "./pages/NewRecording";
 import Upcoming from "./pages/Upcoming";
 import Landing from "./pages/landing/Landing";
+import Privacy from "./pages/Privacy";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
@@ -23,6 +24,7 @@ export default function App() {
     <Routes>
       <Route index element={<Landing />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/privacy" element={<Privacy />} />
       <Route path="/c/:token" element={<Clip />} />
       <Route element={<RequireAuth><Layout /></RequireAuth>}>
         <Route path="/meetings" element={<Meetings />} />

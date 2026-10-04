@@ -691,7 +691,7 @@ function Footer() {
     { title: "Product", links: [{ label: "Overview", href: "#overview" }, { label: "Features", href: "#features" }, { label: "Pricing", href: "#pricing" }, { label: "Live demo", onClick: tryDemo }] },
     { title: "Use cases", links: USE_CASES.slice(0, 5).map((u) => ({ label: `For ${u.title.toLowerCase()}`, href: "#use-cases" })) },
     { title: "Resources", links: [{ label: "Source code", href: "https://github.com/samiarif02/fathom-clone" }, { label: "FAQ", href: "#faq" }, { label: "How it works", href: "#how" }] },
-    { title: "Account", links: [{ label: "Sign up", to: "/login?mode=signup" }, { label: "Log in", to: "/login" }] },
+    { title: "Account", links: [{ label: "Sign up", to: "/login?mode=signup" }, { label: "Log in", to: "/login" }, { label: "Privacy policy", to: "/privacy" }] },
   ];
   return (
     <footer className="bg-[#1b1b1b] px-5 pb-10 pt-14 md:px-10">

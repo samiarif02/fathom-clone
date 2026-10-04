@@ -43,7 +43,10 @@ Try a shared clip while signed out: https://fathom-clone.fathom-clone.workers.de
 - **Join & record** opens the call and the recorder in one click, with the event's title. The recording is linked to the event, and Upcoming then shows "Recorded".
 - **Meeting alerts:** a banner and a desktop notification 5 minutes before each meeting. A louder one appears if the meeting has started and nothing is recording, which covers "forgot to hit record". Alerts work while the app is open in a tab; there's no background push.
 - The demo account shows a sample week, because it can't connect a real Google account.
-- The real OAuth flow is wired up, but the Google app is in *testing* mode, so only listed test users can connect. Opening it to everyone needs Google's verification review for calendar scopes.
+- **Anyone can connect a real Google account.** The OAuth app is published but hasn't been through Google's verification review, so Google shows an "unverified app" screen first: click **Advanced → Go to Fathom Clone**, then tick **View events on all your calendars**.
+- Access is read-only, and **Disconnect** revokes the token.
+- Until the app is verified, Google limits it to 100 users in total.
+- Privacy policy: [/privacy](https://fathom-clone.fathom-clone.workers.dev/privacy).
 
 **Capture (stubbed, see below).** Under **New recording** you can upload a file or record a browser tab together with your microphone.
 - The recording streams to R2 in chunks.

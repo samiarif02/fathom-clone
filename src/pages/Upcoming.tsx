@@ -126,6 +126,13 @@ export default function Upcoming() {
             Connect Google Calendar
           </button>
           {data.configured === false && <p className="mt-3 text-xs text-zinc-500">Google sign-in isn't configured on this deployment yet.</p>}
+          {data.configured !== false && (
+            <p className="mx-auto mt-4 max-w-sm rounded-lg bg-amber-50 px-3 py-2 text-left text-xs text-amber-900">
+              Heads-up: this demo app hasn't been through Google's verification review, so Google shows a warning screen.
+              Click <b>Advanced → Go to Fathom Clone (unsafe)</b>, then tick <b>View events on all your calendars</b>. Access is read-only, and you can
+              disconnect any time. <a href="/privacy" className="underline">Privacy policy</a>
+            </p>
+          )}
         </div>
       ) : (
         <>
