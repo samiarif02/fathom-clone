@@ -10,14 +10,14 @@ import { clock } from "../../lib/format";
 export function Speakers({ participants, segments, duration, ms, onSeek, focus, onFocus, onRename }: {
   participants: Participant[]; segments: Segment[]; duration: number; ms: number;
   onSeek: (ms: number) => void; focus: string | null; onFocus: (id: string | null) => void;
-  onRename: (id: string, name: string) => void;
+  onRename?: (id: string, name: string) => void; // omitted on view-only shared pages
 }) {
   const [editing, setEditing] = useState<string | null>(null);
   async function rename(id: string, name: string) {
     setEditing(null);
     const clean = name.trim();
     if (!clean) return;
-    onRename(id, clean);
+    onRename?.(id, clean);
     await (await getSupabase()).from("participants").update({ name: clean }).eq("id", id);
   }
   const stats = useMemo(() => {
@@ -51,6 +51,8 @@ export function Speakers({ participants, segments, duration, ms, onSeek, focus, 
                   <input autoFocus defaultValue={p.name} onBlur={(e) => rename(p.id, e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") rename(p.id, e.currentTarget.value); if (e.key === "Escape") setEditing(null); }}
                     className="w-full rounded border border-brand-400 px-1 text-sm font-medium outline-none" />
+                ) : !onRename ? (
+                  <span className="block truncate text-sm font-medium leading-tight">{p.name}</span>
                 ) : (
                   <button onClick={() => setEditing(p.id)} className="group/name flex max-w-full items-center gap-1 text-left" title="Rename speaker">
                     <span className="truncate text-sm font-medium leading-tight">{p.name}</span>

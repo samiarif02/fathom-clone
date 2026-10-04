@@ -8,10 +8,11 @@ import { clock } from "../../lib/format";
 import { api } from "../../lib/api";
 import { getSupabase } from "../../lib/supabase";
 
-export function Summary({ meetingId, summaries, actionItems, participants, template, onTemplate, onSeek, onSummary, onActionItems }: {
+export function Summary({ meetingId, summaries, actionItems, participants, template, onTemplate, onSeek, onSummary, onActionItems, readOnly }: {
   meetingId: string; summaries: SummaryRow[]; actionItems: ActionItem[]; participants: Participant[];
   template: string; onTemplate: (t: string) => void; onSeek: (ms: number) => void;
   onSummary: (s: SummaryRow) => void; onActionItems: (a: ActionItem[]) => void;
+  readOnly?: boolean; // shared view: only notes that already exist, nothing editable
 }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +35,7 @@ export function Summary({ meetingId, summaries, actionItems, participants, templ
   }
 
   async function toggle(item: ActionItem) {
+    if (readOnly) return;
     const next = actionItems.map((a) => (a.id === item.id ? { ...a, done: !a.done } : a));
     onActionItems(next);
     const sb = await getSupabase();
@@ -56,12 +58,12 @@ export function Summary({ meetingId, summaries, actionItems, participants, templ
     <div className="space-y-5 px-4 py-4">
       <div>
         <div className="flex flex-wrap gap-1.5">
-          {TEMPLATES.map((t) => {
+          {TEMPLATES.filter((t) => !readOnly || summaries.some((s) => s.template === t.id)).map((t) => {
             const has = summaries.some((s) => s.template === t.id);
             return (
               <button
                 key={t.id}
-                onClick={() => { onTemplate(t.id); if (!has && !busy) generate(t.id); }}
+                onClick={() => { onTemplate(t.id); if (!has && !busy && !readOnly) generate(t.id); }}
                 title={t.description}
                 className={clsx(
                   "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
@@ -90,7 +92,8 @@ export function Summary({ meetingId, summaries, actionItems, participants, templ
                 <li key={a.id} className="flex items-start gap-3 px-4 py-2.5">
                   <button
                     onClick={() => toggle(a)}
-                    className={clsx("mt-0.5 grid size-4 shrink-0 place-items-center rounded border", a.done ? "border-brand-600 bg-brand-600 text-white" : "border-zinc-300 hover:border-brand-500")}
+                    disabled={readOnly}
+                    className={clsx("mt-0.5 grid size-4 shrink-0 place-items-center rounded border", a.done ? "border-brand-600 bg-brand-600 text-white" : "border-zinc-300", !readOnly && !a.done && "hover:border-brand-500", readOnly && "cursor-default")}
                     aria-label={a.done ? "Mark not done" : "Mark done"}
                   >
                     {a.done && <Check className="size-3" />}
@@ -140,9 +143,9 @@ export function Summary({ meetingId, summaries, actionItems, participants, templ
       ) : (
         <div className="rounded-xl border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500">
           {error ? <p className="mb-3 text-rose-600">{error}</p> : <p className="mb-3">No {meta.label} notes yet.</p>}
-          <button onClick={() => generate(template)} disabled={!!busy} className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60">
+          {!readOnly && <button onClick={() => generate(template)} disabled={!!busy} className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60">
             <Sparkles className="size-4" /> Generate {meta.label} notes
-          </button>
+          </button>}
         </div>
       )}
     </div>

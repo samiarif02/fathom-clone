@@ -8,7 +8,7 @@ import { clock } from "../../lib/format";
 
 export function Transcript({ segments, participants, ms, onSeek, focus, onClearFocus, onHighlightLine }: {
   segments: Segment[]; participants: Participant[]; ms: number; onSeek: (ms: number) => void;
-  focus: string | null; onClearFocus: () => void; onHighlightLine: (s: Segment) => void;
+  focus: string | null; onClearFocus: () => void; onHighlightLine?: (s: Segment) => void;
 }) {
   const people = useMemo(() => new Map(participants.map((p) => [p.id, p])), [participants]);
   const [query, setQuery] = useState("");
@@ -100,13 +100,13 @@ export function Transcript({ segments, participants, ms, onSeek, focus, onClearF
                   {isMatch ? <Highlighted text={s.text} q={q} /> : s.text}
                 </p>
               </div>
-              <button
+              {onHighlightLine && <button
                 onClick={(e) => { e.stopPropagation(); onHighlightLine(s); }}
                 className="absolute right-2 top-2 rounded-md bg-white p-1 text-zinc-400 shadow-sm ring-1 ring-zinc-200 hover:text-amber-500 focus-visible:opacity-100 pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100"
                 title="Highlight this moment" aria-label="Highlight this moment"
               >
                 <Star className="size-3.5" />
-              </button>
+              </button>}
             </div>
           );
         })}

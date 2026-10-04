@@ -39,6 +39,11 @@ Try a shared clip while signed out: https://fathom-clone.fathom-clone.workers.de
 - Highlights show on the meeting timeline and in a list.
 - **Share clip** copies a public `/c/<token>` link that works signed out. It plays only the clip window, shows the clip's transcript, and counts views. You can turn the link off again.
 
+**Share a whole meeting, view-only.** **Share → Create view-only link** on any meeting gives a `/s/<token>` link that works signed out.
+- Viewers get the full meeting page: video synced with the transcript, chapters, speakers, AI notes, action items and highlights.
+- They can't change anything: no renaming, ticking, highlighting or generating, and no Ask.
+- The owner sees a view count and can turn the link off (the link then returns 404).
+
 **4. The hour-long, 8-person call.** That's the seeded *Q4 Planning* meeting, which is 60 minutes long.
 - **Chapters:** AI-detected topics on a coloured timeline (hover to preview, click to jump), plus a chapter list with a one-line gist each.
 - **Speakers:** talk time, % share and number of turns per person, plus a lane showing *when* each person spoke. Use the ◀ ▶ buttons to jump through one person's turns, or filter the transcript to just them.

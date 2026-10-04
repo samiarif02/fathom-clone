@@ -10,6 +10,7 @@ import NewRecording from "./pages/NewRecording";
 import Upcoming from "./pages/Upcoming";
 import Landing from "./pages/landing/Landing";
 import Privacy from "./pages/Privacy";
+import SharedMeeting from "./pages/SharedMeeting";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
@@ -26,6 +27,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/c/:token" element={<Clip />} />
+      <Route path="/s/:token" element={<SharedMeeting />} />
       <Route element={<RequireAuth><Layout /></RequireAuth>}>
         <Route path="/meetings" element={<Meetings />} />
         <Route path="/meetings/:id" element={<MeetingPage />} />

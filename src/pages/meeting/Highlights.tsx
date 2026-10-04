@@ -79,8 +79,8 @@ export function HighlightComposer({ meetingId, draft, ms, duration, onChange, on
   );
 }
 
-export function HighlightList({ highlights, onSeek, onChange }: {
-  highlights: Highlight[]; onSeek: (ms: number) => void; onChange: (h: Highlight[]) => void;
+export function HighlightList({ highlights, onSeek, onChange, readOnly }: {
+  highlights: Highlight[]; onSeek: (ms: number) => void; onChange: (h: Highlight[]) => void; readOnly?: boolean;
 }) {
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -134,7 +134,7 @@ export function HighlightList({ highlights, onSeek, onChange }: {
               <a href={clipUrl(h.share_token)} target="_blank" rel="noreferrer" className="mt-1 block truncate text-xs text-brand-600 hover:underline">{clipUrl(h.share_token)}</a>
             )}
           </div>
-          <div className="flex shrink-0 items-center gap-1">
+          {!readOnly && <div className="flex shrink-0 items-center gap-1">
             <button onClick={() => share(h)} className="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50">
               {copied === h.id ? <><Check className="size-3.5 text-emerald-600" /> Link copied</> : <><Link2 className="size-3.5" /> {h.share_token ? "Copy link" : "Share clip"}</>}
             </button>
@@ -146,7 +146,7 @@ export function HighlightList({ highlights, onSeek, onChange }: {
             <button onClick={() => remove(h)} className="rounded-md p-1.5 text-zinc-400 hover:bg-rose-50 hover:text-rose-600" title="Delete highlight" aria-label="Delete highlight">
               <Trash2 className="size-3.5" />
             </button>
-          </div>
+          </div>}
         </li>
       ))}
     </ul>

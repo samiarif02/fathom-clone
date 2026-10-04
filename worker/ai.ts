@@ -5,8 +5,9 @@ import type { AiRunner } from "../shared/pipeline.ts";
 export const isQuotaError = (e: unknown) => /4006|daily free allocation|neurons/i.test(e instanceof Error ? e.message : String(e));
 
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
-// Aliases, so a model retirement doesn't break the fallback. Lite is less loaded during spikes.
-const GEMINI_MODELS = ["gemini-flash-latest", "gemini-flash-lite-latest"];
+// Free-tier limits are per model per project: flash-lite allows ~500 requests/day, flash only ~20,
+// so lite goes first and flash is the last resort. Aliases survive model retirements.
+const GEMINI_MODELS = ["gemini-flash-lite-latest", "gemini-flash-latest"];
 
 /** Gemini's OpenAI-compatible endpoint, used only when the Workers AI allowance runs out. */
 async function gemini(env: Bindings, body: Record<string, unknown>): Promise<unknown> {

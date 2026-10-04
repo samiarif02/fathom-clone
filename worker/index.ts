@@ -69,6 +69,31 @@ app.get("/public/clips/:token", async (c) => {
   });
 });
 
+// Signed-out, view-only meeting page. The share token is the only credential; this returns
+// the meeting's own data and nothing else, and there are no write routes for shared meetings.
+app.get("/public/meetings/:token", async (c) => {
+  const db = adminClient(c.env);
+  const { data: m } = await db
+    .from("meetings")
+    .select("id,title,started_at,duration_ms,status,media_key,media_kind,share_views,participants(id,name,color,idx),chapters(id,idx,start_ms,end_ms,title,gist),summaries(template,sections,created_at),action_items(id,idx,text,assignee_participant_id,at_ms,done),highlights(id,start_ms,end_ms,note,created_at)")
+    .eq("share_token", c.req.param("token"))
+    .maybeSingle();
+  if (!m) return c.json({ error: "This meeting link is invalid or has been turned off." }, 404);
+  const { data: segments } = await db
+    .from("transcript_segments").select("id,idx,start_ms,end_ms,text,participant_id").eq("meeting_id", m.id).order("idx").limit(5000);
+  c.executionCtx.waitUntil(Promise.resolve(db.from("meetings").update({ share_views: (m.share_views ?? 0) + 1 }).eq("id", m.id)));
+  const { media_key, share_views: _views, ...meeting } = m;
+  return c.json({
+    meeting: {
+      ...meeting, error: null, stage: "done", source: "shared",
+      // Highlights show on the timeline and in the list, but their own share links stay private.
+      highlights: (m.highlights ?? []).map((h) => ({ ...h, share_token: null, view_count: 0 })),
+      segments: segments ?? [],
+    },
+    media_url: media_key ? await signedMediaUrl(c.env, media_key) : null,
+  });
+});
+
 // ---- Signed-in routes ----------------------------------------------------------------
 app.route("/uploads", uploads);
 app.route("/calendar", calendar);

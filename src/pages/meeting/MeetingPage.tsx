@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
-import { ArrowLeft, Clock, Loader2, Pause, Play, Star, Users } from "lucide-react";
+import { ArrowLeft, Clock, Eye, Loader2, Pause, Play, Star, Users } from "lucide-react";
 import clsx from "clsx";
 import { getMeeting } from "../../lib/data";
 import { api } from "../../lib/api";
@@ -14,10 +14,13 @@ import { Transcript } from "./Transcript";
 import { Summary } from "./Summary";
 import { HighlightComposer, HighlightList, type Draft } from "./Highlights";
 import { AskPanel } from "../../components/AskPanel";
+import { ShareMeeting } from "./ShareMeeting";
 
 type Tab = "summary" | "transcript" | "ask";
 
-export default function MeetingPage() {
+/** The meeting page. With `shareToken` it renders the signed-out, view-only version of a shared meeting. */
+export default function MeetingPage({ shareToken }: { shareToken?: string } = {}) {
+  const readOnly = !!shareToken;
   const { id } = useParams();
   const [params, setParams] = useSearchParams();
   const [meeting, setMeeting] = useState<MeetingDetail | null>(null);
@@ -31,6 +34,13 @@ export default function MeetingPage() {
 
   useEffect(() => {
     let live = true;
+    if (shareToken) {
+      fetch(`/api/public/meetings/${shareToken}`)
+        .then(async (r) => (r.ok ? r.json() : Promise.reject(new Error((await r.json().catch(() => ({}))).error ?? "This meeting link isn't available."))))
+        .then((d: { meeting: MeetingDetail; media_url: string | null }) => { if (live) { setMeeting(d.meeting); setMediaUrl(d.media_url); } })
+        .catch((e) => live && setError(e.message));
+      return () => { live = false; };
+    }
     const load = () =>
       getMeeting(id!)
         .then((m) => { if (live) setMeeting(m); return m; })
@@ -38,12 +48,12 @@ export default function MeetingPage() {
     load();
     api<{ url: string }>(`/meetings/${id}/media-url`).then((r) => live && setMediaUrl(r.url)).catch(() => {});
     return () => { live = false; };
-  }, [id]);
+  }, [id, shareToken]);
 
   // Fresh upload: drive the resumable pipeline (transcribe, then chapters + notes) one step at a
   // time, and poll while another tab holds a step. Leaving and coming back picks up where it was.
   useEffect(() => {
-    if (meeting?.status !== "processing") return;
+    if (readOnly || meeting?.status !== "processing") return;
     let live = true;
     const step = async () => {
       if (meeting.stage === "transcribe" || meeting.stage === "analyze") {
@@ -87,8 +97,8 @@ export default function MeetingPage() {
     return (
       <div className="mx-auto max-w-md px-4 py-16 text-center">
         <p className="font-medium">This meeting isn't available</p>
-        <p className="mt-1 text-sm text-zinc-500">It may have been removed, or it belongs to another account.</p>
-        <Link to="/meetings" className="mt-4 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">Back to all meetings</Link>
+        <p className="mt-1 text-sm text-zinc-500">{readOnly ? error : "It may have been removed, or it belongs to another account."}</p>
+        <Link to={readOnly ? "/" : "/meetings"} className="mt-4 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">{readOnly ? "Go to Fathom Clone" : "Back to all meetings"}</Link>
       </div>
     );
   if (!meeting) return <div className="grid h-full place-items-center text-zinc-400"><Loader2 className="size-5 animate-spin" /></div>;
@@ -109,9 +119,21 @@ export default function MeetingPage() {
       <div className="min-w-0 lg:overflow-y-auto">
         <div className="mx-auto max-w-4xl space-y-5 px-4 py-5 md:px-6">
           <header>
-            <Link to="/meetings" className="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 hover:text-zinc-800">
-              <ArrowLeft className="size-3.5" /> All meetings
-            </Link>
+            {readOnly ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600">
+                <Eye className="size-3.5" /> Shared meeting · view only
+              </span>
+            ) : (
+              <div className="flex items-center justify-between gap-3">
+                <Link to="/meetings" className="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 hover:text-zinc-800">
+                  <ArrowLeft className="size-3.5" /> All meetings
+                </Link>
+                {meeting.status === "ready" && (
+                  <ShareMeeting meetingId={meeting.id} token={meeting.share_token ?? null} views={meeting.share_views ?? 0}
+                    onChange={(share_token) => setMeeting({ ...meeting, share_token })} />
+                )}
+              </div>
+            )}
             <h1 className="mt-2 text-xl font-semibold tracking-tight">{meeting.title}</h1>
             <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500">
               <span>{dateTime(meeting.started_at)}</span>
@@ -153,15 +175,15 @@ export default function MeetingPage() {
                   {speaker && <> · {speaker.name} speaking</>}
                 </div>
               </div>
-              <button
+              {!readOnly && <button
                 onClick={() => setDraft({ start_ms: Math.max(0, player.ms - 15000), end_ms: Math.min(meeting.duration_ms, player.ms + 15000), note: "" })}
                 className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-800 hover:bg-amber-100"
               >
                 <Star className="size-4" /> Highlight
-              </button>
+              </button>}
             </div>
             <Timeline duration={meeting.duration_ms} ms={player.ms} chapters={meeting.chapters} highlights={meeting.highlights} onSeek={seek} />
-            {draft && (
+            {draft && !readOnly && (
               <div className="mt-3">
                 <HighlightComposer
                   meetingId={meeting.id} draft={draft} ms={player.ms} duration={meeting.duration_ms}
@@ -200,20 +222,22 @@ export default function MeetingPage() {
             <Speakers
               participants={meeting.participants} segments={meeting.segments} duration={meeting.duration_ms} ms={player.ms}
               onSeek={seek} focus={focus} onFocus={(f) => { setFocus(f); if (f) setTab("transcript"); }}
-              onRename={(pid, name) => setMeeting({ ...meeting, participants: meeting.participants.map((p) => (p.id === pid ? { ...p, name } : p)) })}
+              onRename={readOnly ? undefined : (pid, name) => setMeeting({ ...meeting, participants: meeting.participants.map((p) => (p.id === pid ? { ...p, name } : p)) })}
             />
           </Card>
 
-          <Card title="Highlights" subtitle="Clips you can share with anyone, even if they're signed out.">
-            <HighlightList highlights={meeting.highlights} onSeek={seek} onChange={(highlights) => setMeeting({ ...meeting, highlights })} />
-          </Card>
+          {(!readOnly || meeting.highlights.length > 0) && (
+            <Card title="Highlights" subtitle={readOnly ? "Key moments picked out by the person who shared this meeting." : "Clips you can share with anyone, even if they're signed out."}>
+              <HighlightList highlights={meeting.highlights} onSeek={seek} readOnly={readOnly} onChange={(highlights) => setMeeting({ ...meeting, highlights })} />
+            </Card>
+          )}
         </div>
       </div>
 
       {/* Right: notes and transcript */}
       <aside className="flex min-h-[70vh] flex-col border-t border-zinc-200 bg-white lg:h-full lg:min-h-0 lg:border-l lg:border-t-0">
         <div className="flex border-b border-zinc-200 px-2">
-          {(["summary", "transcript", "ask"] as const).map((t) => (
+          {(readOnly ? (["summary", "transcript"] as const) : (["summary", "transcript", "ask"] as const)).map((t) => (
             <button key={t} onClick={() => setTab(t)}
               className={clsx("relative px-4 py-3 text-sm font-medium capitalize", tab === t ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-800")}>
               {t === "summary" ? "AI notes" : t === "transcript" ? "Transcript" : "Ask"}
@@ -230,12 +254,13 @@ export default function MeetingPage() {
               template={template} onTemplate={pickTemplate} onSeek={seek}
               onSummary={(s) => setMeeting({ ...meeting, summaries: [...meeting.summaries.filter((x) => x.template !== s.template), s] })}
               onActionItems={(action_items) => setMeeting({ ...meeting, action_items })}
+              readOnly={readOnly}
             />
           ) : (
             <Transcript
               segments={meeting.segments} participants={meeting.participants} ms={player.ms} onSeek={seek}
               focus={focus} onClearFocus={() => setFocus(null)}
-              onHighlightLine={(s) => setDraft({ start_ms: s.start_ms, end_ms: s.end_ms, note: "" })}
+              onHighlightLine={readOnly ? undefined : (s) => setDraft({ start_ms: s.start_ms, end_ms: s.end_ms, note: "" })}
             />
           )}
         </div>
