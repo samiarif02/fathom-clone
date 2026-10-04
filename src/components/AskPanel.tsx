@@ -89,7 +89,7 @@ export function AskPanel({ meetings, fixedMeetingId, onClose, className }: {
                 <div key={i} className="ml-8 rounded-2xl rounded-br-md bg-brand-600 px-3.5 py-2 text-sm text-white">{m.content}</div>
               ) : (
                 <div key={i} className={clsx("mr-2 text-sm leading-relaxed", m.error ? "text-rose-600" : "text-zinc-800")}>
-                  <Answer text={m.content} sources={m.sources ?? {}} />
+                  <Answer text={m.content} sources={m.sources ?? {}} compact={!!fixedMeetingId} />
                 </div>
               ),
             )}
@@ -137,23 +137,28 @@ export function AskPanel({ meetings, fixedMeetingId, onClose, className }: {
   );
 }
 
-const CITE = /\[(M\d+)(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))?\]/g;
+// Matches "[M2 21:10]", "[M2]" and grouped "[M2 4:17, M6 33:49]".
+const CITE = /\[(M\d+(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?(?:\s*[,;]\s*M\d+(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?)*)\]/g;
+const REF = /M\d+(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?/g;
 const toMs = (t: string) => t.split(":").map(Number).reduce((a, n) => a * 60 + n, 0) * 1000;
 
 /** Renders the model's light markdown (paragraphs, "- " bullets, **bold**) with citation chips. */
-function Answer({ text, sources }: { text: string; sources: Record<string, { id: string; title: string }> }) {
+/** `compact` (inside one meeting): chips show just the time, since the meeting is obvious. */
+function Answer({ text, sources, compact }: { text: string; sources: Record<string, { id: string; title: string }>; compact?: boolean }) {
   const inline = (line: string, key: string): ReactNode[] => {
     const out: ReactNode[] = [];
     let last = 0;
     for (const m of line.matchAll(CITE)) {
       out.push(...bold(line.slice(last, m.index), `${key}-t${m.index}`));
-      const src = sources[m[1]];
-      if (src) {
-        const to = `/meetings/${src.id}${m[2] ? `?t=${toMs(m[2])}` : ""}`;
+      for (const [j, ref] of (m[1].match(REF) ?? []).entries()) {
+        const [label, time] = ref.split(/\s+/);
+        const src = sources[label];
+        if (!src) continue;
+        const to = `/meetings/${src.id}${time ? `?t=${toMs(time)}` : ""}`;
         out.push(
-          <Link key={`${key}-c${m.index}`} to={to} title={src.title}
+          <Link key={`${key}-c${m.index}-${j}`} to={to} title={src.title}
             className="mx-0.5 inline-flex max-w-[12rem] items-center gap-1 rounded bg-brand-50 px-1.5 py-px align-baseline text-[11px] font-medium text-brand-700 hover:bg-brand-100">
-            <span className="truncate">{src.title}</span>{m[2] && <span className="shrink-0 tabular-nums">· {m[2]}</span>}
+            {compact && time ? <span className="tabular-nums">{time}</span> : <><span className="truncate">{src.title}</span>{time && <span className="shrink-0 tabular-nums">· {time}</span>}</>}
           </Link>,
         );
       }

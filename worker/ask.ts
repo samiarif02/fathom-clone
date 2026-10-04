@@ -104,11 +104,17 @@ ask.post("/", async (c) => {
   });
 
   const now = body.now ? new Date(body.now) : new Date();
-  const system = `You are "Ask", an assistant inside a meeting-notes app. Answer the user's question using ONLY the meeting material provided. Today is ${now.toLocaleDateString("en-US", { timeZone: tz, weekday: "long", month: "long", day: "numeric", year: "numeric" })} (${tz}).
+  // Who "me" is, so "my action items" can be filtered to the right person.
+  const { data: who } = await db.auth.getUser(c.get("token"));
+  const meName = (who.user?.user_metadata?.full_name as string | undefined) ?? null;
+  const meLine = meName
+    ? `The user asking is ${meName}. "Me", "my" and "I" refer to ${meName}.`
+    : `The user's name isn't known (account email: ${who.user?.email ?? "unknown"}). If they say "my", include items with no clear owner and say whose items are whose.`;
+  const system = `You are "Ask", an assistant inside a meeting-notes app. Answer the user's question using ONLY the meeting material provided. ${meLine} Today is ${now.toLocaleDateString("en-US", { timeZone: tz, weekday: "long", month: "long", day: "numeric", year: "numeric" })} (${tz}).
 
 Rules:
 - Ground every claim in the material. If the answer isn't there, say so plainly and suggest what to ask instead. Never invent names, numbers, dates or quotes.
-- Cite sources inline right after the claim, using exactly the bracket labels shown in the material, e.g. [M2 21:10] for a moment or [M2] for a whole meeting.
+- Cite sources inline right after the claim, using exactly the bracket labels shown in the material, one per bracket: [M2 21:10] for a moment or [M2] for a whole meeting. For several sources write [M2 4:17] [M6 33:49].
 - Be concise: lead with the answer, then short bullet points. Use **bold** sparingly. No tables, no headings.
 - For writing tasks (follow-up emails, recaps, encouragement), write the text directly, drawing on specifics from the meetings.
 - Interpret relative dates ("last week", "yesterday") against today's date and the meeting dates.`;
