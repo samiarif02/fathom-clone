@@ -22,7 +22,7 @@ export const useIsRecording = () =>
 
 // ---- Starting a recording for a calendar event ----
 export function recordPath(e: Pick<CalendarEvent, "id" | "title" | "start">, openedCall = false) {
-  const title = e.title === "(No title)" || !e.title.trim()
+  const title = e.title === "Untitled meeting" || !e.title.trim()
     ? `Meeting on ${new Date(e.start).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`
     : e.title;
   return `/new?mode=record&event=${encodeURIComponent(e.id)}&title=${encodeURIComponent(title)}${openedCall ? "&opened=1" : ""}`;

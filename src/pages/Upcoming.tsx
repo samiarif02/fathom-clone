@@ -47,7 +47,7 @@ export default function Upcoming() {
   }
 
   function testAlert() {
-    const e = data?.events[0];
+    const e = data?.events.find((x) => new Date(x.start).getTime() > Date.now());
     notify(e ? `Starts in 5 min: ${e.title}` : "Meeting alerts are on", e ? "Click to join and start recording." : "You'll be reminded before meetings.", e ? () => joinAndRecord(e, navigate) : undefined);
   }
 

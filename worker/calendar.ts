@@ -131,7 +131,7 @@ function toUpcoming(e: GoogleEvent): UpcomingEvent {
   const video = e.hangoutLink ?? e.conferenceData?.entryPoints?.find((p) => p.entryPointType === "video")?.uri
     ?? [e.location, e.description].join(" ").match(/https:\/\/[^\s"<]*(zoom\.us|teams\.microsoft\.com|meet\.google\.com)[^\s"<]*/)?.[0] ?? null;
   return {
-    id: e.id, title: e.summary ?? "(No title)", start: e.start!.dateTime!, end: e.end?.dateTime ?? e.start!.dateTime!,
+    id: e.id, title: e.summary?.trim() || "Untitled meeting", start: e.start!.dateTime!, end: e.end?.dateTime ?? e.start!.dateTime!,
     attendees: (e.attendees ?? []).filter((a) => !a.self).map((a) => ({ name: a.displayName ?? a.email.split("@")[0], email: a.email })),
     conference: video?.includes("zoom.us") ? "zoom" : video?.includes("teams.microsoft") ? "teams" : video ? "meet" : null,
     link: video,
